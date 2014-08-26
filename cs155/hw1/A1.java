@@ -1,5 +1,5 @@
-import java.util.Random;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  *  Tests exact and approximate solution algorithms for the Two Processor Scheduling problem
@@ -13,7 +13,7 @@ public class A1 {
 
    // random tests of the three algorithms
    for (int i = 1; i <= 3; i++) {
-	   TwoProcessorScheduler s = new TwoProcessorScheduler(10,r,i);
+	   TwoProcessorScheduler s = new TwoProcessorScheduler(10, r, i);
        System.out.println(s.firstFit());
        System.out.println(s.firstFitDecreasing());
        System.out.println(s.exactBacktracking());

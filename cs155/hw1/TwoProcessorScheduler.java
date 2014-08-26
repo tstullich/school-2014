@@ -1,5 +1,5 @@
-import java.util.Random;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Provides exact and greedy approximate solution algorithms for the Two Processor Scheduling problem.
