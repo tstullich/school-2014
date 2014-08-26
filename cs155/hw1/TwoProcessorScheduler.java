@@ -84,14 +84,14 @@ public class TwoProcessorScheduler {
     /**
      * Calculates something
      */
-   public Schedule firstFit() {
-      return null;
-   }
+    public Schedule firstFit() {
+        return null;
+    }
 
-   /**
-    * Calculates something else
-    */
-   public Schedule firstFitDecreasing() {
-      return null;
-   }
+    /**
+     * Calculates something else
+     */
+    public Schedule firstFitDecreasing() {
+        return null;
+    }
 }

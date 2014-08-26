@@ -2,11 +2,10 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- *  Tests exact and approximate solution algorithms for the Two Processor Scheduling problem
- *  @author Jeff Smith
- *  @version for CS 155, Fall 2014, SJSU
+ * Tests exact and approximate solution algorithms for the Two Processor Scheduling problem
+ * @author Jeff Smith
+ * @version for CS 155, Fall 2014, SJSU
  */
-
 public class A1 {
     public static Random r = new Random(); // for generating random instances
     public static void main(String[] args) {
@@ -38,6 +37,6 @@ public class A1 {
         Schedule sGood = s.exactBacktracking();
         System.out.println(sBad);
         System.out.println(sGood);
-        System.out.println(((double) sBad.getTotalTime())/sGood.getTotalTime());
+        System.out.println(((double) sBad.getTotalTime()) / sGood.getTotalTime());
     }
 }
