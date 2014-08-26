@@ -80,4 +80,18 @@ public class TwoProcessorScheduler {
             return error1 <= error2 ? ifYes : ifNo;
         }
     }
+
+    /**
+     * Calculates something
+     */
+   public Schedule firstFit() {
+      return null;
+   }
+
+   /**
+    * Calculates something else
+    */
+   public Schedule firstFitDecreasing() {
+      return null;
+   }
 }

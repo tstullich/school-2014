@@ -6,8 +6,7 @@ import java.util.Arrays;
  *  @version for CS 155, Fall 2014, SJSU
  */
 
-public class Schedule
-{
+public class Schedule {
     // the schedule, from first task to last
     // if entry i is true, then task i is scheduled for the first processor,
     // otherwise it's scheduled for the second processor
