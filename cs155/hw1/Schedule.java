@@ -19,9 +19,9 @@ public class Schedule {
 
     // Constructs an empty Schedule for n tasks
     public Schedule(int n) {
-       isForFirstProcessor = new boolean[n];
-       totalTime1 = 0;
-       totalTime2 = 0;
+        isForFirstProcessor = new boolean[n];
+        totalTime1 = 0;
+        totalTime2 = 0;
     }
 
     /**
@@ -32,9 +32,9 @@ public class Schedule {
      * @param t1 the total time of the tasks assigned to processor 2
      */
     public Schedule(boolean[] b, int t1, int t2) {
-       isForFirstProcessor = Arrays.copyOf(b, b.length);
-       totalTime1 = t1;
-       totalTime2 = t2;
+        isForFirstProcessor = Arrays.copyOf(b, b.length);
+        totalTime1 = t1;
+        totalTime2 = t2;
     }
 
     /**
