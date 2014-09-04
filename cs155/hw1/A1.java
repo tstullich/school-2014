@@ -2,7 +2,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Tests exact and approximate solution algorithms for the Two Processor Scheduling problem
+ * Tests exact and approximate solution algorithms for the Two Processor Scheduling problem.
  * @author Jeff Smith
  * @version for CS 155, Fall 2014, SJSU
  */
