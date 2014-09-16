@@ -25,7 +25,7 @@ public class TwoProcessorScheduler {
         this.n = n;
         weight = new int[n];
         r = new Random(seed);
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n - 1; i++) {
             weight[i] = 1 + r.nextInt(MAX_LENGTH);
         }
     }
@@ -70,9 +70,9 @@ public class TwoProcessorScheduler {
             return new Schedule(result, total1, total2);
         }
         else {
-            result[n-1] = true;
+            result[n - 1] = true;
             Schedule ifYes = exactRecursive(n - 1, total1 + weight[n - 1], total2, result);
-            result[n-1] = false;
+            result[n - 1] = false;
             Schedule ifNo = exactRecursive(n - 1, total1, total2 + weight[n - 1], result);
             int error1 = Math.abs(ifYes.getTotalTime1() - ifYes.getTotalTime2());
             int error2 = Math.abs(ifNo.getTotalTime1() - ifNo.getTotalTime2());
@@ -82,16 +82,47 @@ public class TwoProcessorScheduler {
     }
 
     /**
-     * Calculates something
+     * Calculates total time for two processors by considering each task in order.
      */
     public Schedule firstFit() {
-        return null;
+        int proc1 = 0;
+        int proc2 = 0;
+        boolean[] result = new boolean[weight.length];
+        for (int i = 0; i < weight.length - 1; i++) {
+            if (proc1 <= proc2) {
+                proc1 += weight[i];
+                result[i] = true;
+            }
+            else {
+                proc2 += weight[i];
+                result[i] = false;
+            }
+        }
+        return new Schedule(result, proc1, proc2);
     }
 
     /**
-     * Calculates something else
+     * Calculates total time for two processor but first sorts the task lengths
+     * from largest to smallest. I use the static helper function from the Java
+     * API which uses a 2-Pivot Quicksort algorithm which give O(n lg n) time
+     * for the sort
      */
     public Schedule firstFitDecreasing() {
-        return null;
+        int[] weight1 = Arrays.copyOf(weight, weight.length);
+        Arrays.sort(weight1);
+        int proc1 = 0;
+        int proc2 = 0;
+        boolean[] result = new boolean[weight1.length];
+        for (int i = 0; i < weight1.length - 1; i++) {
+            if (proc1 <= proc2) {
+                proc1 += weight1[i];
+                result[i] = true;
+            }
+            else {
+                proc2 += weight1[i];
+                result[i] = false;
+            }
+        }
+        return new Schedule(result, proc1, proc2);
     }
 }
