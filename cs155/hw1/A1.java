@@ -8,8 +8,8 @@ import java.util.Random;
  */
 public class A1 {
     public static Random r = new Random(); // for generating random instances
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         // random tests of the three algorithms
         for (int i = 1; i <= 3; i++) {
             TwoProcessorScheduler s = new TwoProcessorScheduler(10, r, i);
