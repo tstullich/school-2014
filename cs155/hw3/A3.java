@@ -57,7 +57,9 @@ public class A3
     public static void main(String[] args)                          {
       
       Aligner a = new Aligner();      
+      a.align("NUCULAR", "NUCLEAR");
       int[][] table = a.getTable();
+      /*int[][] table = a.getTable();
       print(table);
       Map.Entry<String, String> al = a.getAlignment();
       System.out.println(al.getKey());           
@@ -75,5 +77,5 @@ public class A3
       test("McFall", "MCfall");           
       test("GTTCCTAATA", "CGATAATTGAGA");           
       test("ALASKA", "MALAYA");           
-      test("ALASKA", "DALLAS");                                    }  
+      test("ALASKA", "DALLAS");*/                                    }
 }
