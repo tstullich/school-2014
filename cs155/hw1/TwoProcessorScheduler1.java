@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -108,8 +109,8 @@ public class TwoProcessorScheduler {
      * for the sort
      */
     public Schedule firstFitDecreasing() {
-        int[] weight1 = Arrays.copyOf(weight, weight.length);
-        Arrays.sort(weight1);
+        Integer[] weight1 = toObject(weight);
+        Arrays.sort(weight1, Collections.reverseOrder());
         int proc1 = 0;
         int proc2 = 0;
         boolean[] result = new boolean[weight1.length];
@@ -125,4 +126,12 @@ public class TwoProcessorScheduler {
         }
         return new Schedule(result, proc1, proc2);
     }
+
+    private static Integer[] toObject(int[] intArray) {
+        Integer[] result = new Integer[intArray.length];
+        for (int i = 0; i < intArray.length; i++) {
+            result[i] = Integer.valueOf(intArray[i]);
+        }
+        return result;
+    } 
 }
