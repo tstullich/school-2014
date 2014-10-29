@@ -15,7 +15,7 @@ public class Aligner {
     public Aligner() {
         // Initializes a 0x0 table in order to not throw
         // errors if align or newAlign have not been called
-        alignmentTable = new int[0][0];
+        alignmentTable = new int[2][2];
         edited = false;
     }
 
@@ -68,33 +68,60 @@ public class Aligner {
     }
 
     public Map.Entry<String, String> getAlignment() {
-        // If strings have not been aligned yet just return the strings
-        Map.Entry<String, String> alignedStrings;
+        // If strings have not been aligned yet just return two empty strings
         if (!edited) {
-            alignedStrings = new AbstractMap.SimpleEntry<String, String>(tempString1.toString(),
-                                                                         tempString2.toString());
+            return new AbstractMap.SimpleEntry<String, String>("", "");
         }
 
         // Need to walk the table now to construct the answer
         int i = tempString1.length();
         int j = tempString2.length();
+        Map.Entry<String, String> alignedStrings;
         StringBuilder s1 = new StringBuilder();
         StringBuilder s2 = new StringBuilder();
-        while ((i != 0) && (j != 0)) {
+        while (((tempString1.length() > 0) && (tempString2.length() > 0)) && ((i != 0) && (j != 0)))  {
             Map.Entry<Integer, Integer> nextValue = findMinTraceback(i, j);
             // Next value matches diagonal entry. Check for case mismatch
             if (((i - 1) == nextValue.getKey()) && ((j - 1) == nextValue.getValue())) {
+                char c1 = tempString1.charAt(tempString1.length() - 1);
+                char c2 = tempString2.charAt(tempString2.length() - 1);
+                // No case mismatch. Proceed with using diagonal entry
+                if (alignmentTable[i - 1][j - 1] - alignmentTable[i][j] == 0) {
+                    s1.append(c1);
+                    s2.append(c2);
+
+                }
+                // Case mismatch. Change the case of the entry to upper
+                else {
+                    s1.append(Character.toUpperCase(c1));
+                    s2.append(Character.toUpperCase(c2));
+                }
+                tempString1.deleteCharAt(tempString1.length() - 1);
+                tempString2.deleteCharAt(tempString2.length() - 1);
             }
-            // Entry above has the lowest value. Need to shift upper
+            // Entry above has the lowest value. Need to shift sequence 2
             else if ((i == nextValue.getKey()) && ((j - 1) == nextValue.getValue())) {
+                s1.append(tempString1.charAt(tempString1.length() - 1));
+                s2.append("_");
+
+                tempString1.deleteCharAt(tempString1.length() - 1);
             }
-            // Next entry needs to be the left entry
+            // Left entry has the lowest value. Need to shift sequence 1
             else {
+                s1.append("_");
+                s2.append(tempString2.charAt(tempString2.length() - 1));
+
+                tempString2.deleteCharAt(tempString2.length() - 1);
             }
 
             i = nextValue.getKey();
             j = nextValue.getValue();
         }
+
+        // Need to add on remaini)g characters that may not have shifted
+        s1.append(tempString1.reverse());
+        s2.append(tempString2.reverse());
+
         return new AbstractMap.SimpleEntry<String, String>(s1.reverse().toString(),
                                                            s2.reverse().toString());
     }
@@ -106,7 +133,8 @@ public class Aligner {
         int above = alignmentTable[i - 1][j];
         int behind = alignmentTable[i][j - 1];
 
-        // Diagonal entry is the lowest
+        // Diagonal entry is the lowest. Also solves tiebreaker in case
+        // multiple entries have the same value. Diagonal always comes first
         if ((diagonal <= above) && (diagonal <= behind)) {
             return new AbstractMap.SimpleEntry<Integer, Integer>(i - 1, j - 1);
         }

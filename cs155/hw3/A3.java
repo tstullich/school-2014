@@ -57,13 +57,13 @@ public class A3
     public static void main(String[] args)                          {
       
       Aligner a = new Aligner();      
-      /*int[][] table = a.getTable();
+      int[][] table = a.getTable();
       table = a.getTable();
       print(table);
       Map.Entry<String, String> al = a.getAlignment();
       System.out.println(al.getKey());           
       System.out.println(al.getValue());    
-      System.out.println();    */
+      System.out.println();    
             
       test("NUCULAR", "NUCLEAR");           
       test("NICKEL", "NICKLE");           
