@@ -3,6 +3,8 @@ import java.lang.StringBuilder;
 import java.util.AbstractMap;
 import java.util.Map;
 
+// TODO If I have time, optimize this shit
+
 public class Aligner {
     private boolean edited;
     private StringBuilder tempString1;
