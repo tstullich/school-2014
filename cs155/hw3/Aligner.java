@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class Aligner {
     private boolean edited;
-    private String tempString1;
-    private String tempString2;
+    private StringBuilder tempString1;
+    private StringBuilder tempString2;
     private int[][] alignmentTable;
     private static int CASE_MISMATCH_COST = 2;
     private static int GAP_COST = 3;
@@ -21,8 +21,8 @@ public class Aligner {
 
     public void align(String string1, String string2) {
         alignmentTable = new int[string1.length() + 1][string2.length() + 1];
-        tempString1 = string1;
-        tempString2 = string2;
+        tempString1 = new StringBuilder(string1);
+        tempString2 = new StringBuilder(string2);
         for (int i = 1; i < string1.length() + 1; i++) {
             for (int j = 1; j < string2.length() + 1; j++) {
                 // Strings match exactly. Use diagonal entry
@@ -31,7 +31,7 @@ public class Aligner {
                 }
                 // No match. Need to introduce gap
                 else {
-                    alignmentTable[i][j] = findMax(i, j);
+                    alignmentTable[i][j] = findMin(i, j);
                 }
             }
         }
@@ -40,8 +40,8 @@ public class Aligner {
 
     public void newAlign(String string1, String string2) {
         alignmentTable = new int[string1.length() + 1][string2.length() + 1];
-        tempString1 = string1;
-        tempString2 = string2;
+        tempString1 = new StringBuilder(string1);
+        tempString2 = new StringBuilder(string2);
         for (int i = 1; i < string1.length() + 1; i++) {
             for (int j = 1; j < string2.length() + 1; j++) {
                 char c1 = string1.charAt(i - 1);
@@ -56,7 +56,7 @@ public class Aligner {
                 }
                 // No match. Need to introduce gap
                 else {
-                    alignmentTable[i][j] = findMax(i, j);
+                    alignmentTable[i][j] = findMin(i, j);
                 }
             }
         }
@@ -71,22 +71,57 @@ public class Aligner {
         // If strings have not been aligned yet just return the strings
         Map.Entry<String, String> alignedStrings;
         if (!edited) {
-            alignedStrings = new AbstractMap.SimpleEntry<String, String>(tempString1, tempString2);
+            alignedStrings = new AbstractMap.SimpleEntry<String, String>(tempString1.toString(),
+                                                                         tempString2.toString());
         }
 
         // Need to walk the table now to construct the answer
-        int i = tempString1.length() + 1;
-        int j = tempString2.length() + 1;
-        String s1 = "";
-        String s2 = "";
+        int i = tempString1.length();
+        int j = tempString2.length();
+        StringBuilder s1 = new StringBuilder();
+        StringBuilder s2 = new StringBuilder();
         while ((i != 0) && (j != 0)) {
+            Map.Entry<Integer, Integer> nextValue = findMinTraceback(i, j);
+            // Next value matches diagonal entry. Check for case mismatch
+            if (((i - 1) == nextValue.getKey()) && ((j - 1) == nextValue.getValue())) {
+            }
+            // Entry above has the lowest value. Need to shift upper
+            else if ((i == nextValue.getKey()) && ((j - 1) == nextValue.getValue())) {
+            }
+            // Next entry needs to be the left entry
+            else {
+            }
 
+            i = nextValue.getKey();
+            j = nextValue.getValue();
         }
-        return new AbstractMap.SimpleEntry<String, String>("test", "test2");
+        return new AbstractMap.SimpleEntry<String, String>(s1.reverse().toString(),
+                                                           s2.reverse().toString());
+    }
+
+    // Finds the entry in the table that should be traced back to next
+    // and returns a pair of the width and height coordinate
+    private Map.Entry<Integer, Integer> findMinTraceback(int i, int j) {
+        int diagonal = alignmentTable[i - 1][j - 1];
+        int above = alignmentTable[i - 1][j];
+        int behind = alignmentTable[i][j - 1];
+
+        // Diagonal entry is the lowest
+        if ((diagonal <= above) && (diagonal <= behind)) {
+            return new AbstractMap.SimpleEntry<Integer, Integer>(i - 1, j - 1);
+        }
+        // Above entry is the lowest
+        else if ((above < diagonal) && (above < behind)) {
+            return new AbstractMap.SimpleEntry<Integer, Integer>(i - 1, j);
+        }
+        // Entry to the left of the table is the lowest
+        else {
+            return new AbstractMap.SimpleEntry<Integer, Integer>(i, j - 1);
+        }
     }
 
     // Finds the greatest number to fill into the given gap
-    private int findMax(int i, int j) {
+    private int findMin(int i, int j) {
         int diagonal = alignmentTable[i - 1][j - 1] + MISMATCH_COST;
         int above = alignmentTable[i - 1][j] + GAP_COST;
         int behind = alignmentTable[i][j - 1] + GAP_COST;
