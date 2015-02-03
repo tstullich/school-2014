@@ -44,10 +44,20 @@ public class Operations {
     }
 
     public static <T> Set<T> filter(Set<T> a, Predicate<T> f) {
-        return a;
+        Set<T> b = new HashSet<T>();
+        for (T ele : a) {
+            if (f.test(ele)) {
+                b.add(ele);
+            }
+        }
+        return b;
     }
 
     public static <T> Set<T> map(Set<T> a, UnaryOperator<T> f) {
-        return a;
+        Set<T> b = new HashSet<T>();
+        for (T ele : a) {
+            b.add(f.apply(ele));
+        }
+        return b;
     }
 }
