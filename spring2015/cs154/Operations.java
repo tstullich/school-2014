@@ -30,6 +30,9 @@ public class Operations {
                 c.add(ele);
             }
         }
+:q
+
+:q
         return c;
 
     }
@@ -59,5 +62,14 @@ public class Operations {
             b.add(f.apply(ele));
         }
         return b;
+    }
+
+    public static <T> Set<Set<T>> power(Set<T> a) {
+        Set<T> b = new HashSet<T>();
+        return null;
+    }
+
+    public static String unicode(int i) {
+        return "";
     }
 }
