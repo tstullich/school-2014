@@ -1,0 +1,10 @@
+#-----------------------------------------------------------
+# Vivado v2014.4 (64-bit)
+# SW Build 1071353 on Tue Nov 18 16:47:07 MST 2014
+# IP Build 1070531 on Tue Nov 18 01:10:18 MST 2014
+# Start of session at: Mon Feb  2 15:55:30 2015
+# Process ID: 6821
+# Log file: /home/tim/school/spring2015/cs147/labs/lab_02/lab_02.runs/synth_1/RIPPLE_COUNTER_TB.vds
+# Journal file: /home/tim/school/spring2015/cs147/labs/lab_02/lab_02.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source RIPPLE_COUNTER_TB.tcl
