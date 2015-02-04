@@ -30,9 +30,6 @@ public class Operations {
                 c.add(ele);
             }
         }
-:q
-
-:q
         return c;
 
     }
