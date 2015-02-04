@@ -10,13 +10,21 @@ public static void main(String args[]) {
     for(int i = 0; i < 20; i++) {
         a.add(i * 3);
     }
-
+    
+    // Tests the filter and map Lambda functions
     Set<Integer> b = Operations.filter(a, (Integer x) -> x % 2 == 0);
     Set<Integer> c = Operations.map(b, (x) -> 2 * x);
     System.out.println("a = " + a);
     System.out.println("b = " + b);
     System.out.println("c = " + c);
 
+    // Tests the different set operation functions
+    System.out.println("A intersect B ? " + Operations.intersect(a, b));
+    System.out.println("A union B ? " + Operations.union(a, b));
+    System.out.println("A - B ? " + Operations.diff(a, b));
+    System.out.println("B subset A ? " + Operations.subset(b, a));
+    
+    // Tests the Power set function
     Set<Integer> d = new HashSet<Integer>();
     d.add(1);
     d.add(2);
@@ -30,6 +38,7 @@ public static void main(String args[]) {
         System.out.println(s);
     }
     
+    // Tests the Unicode function
     System.out.println(Operations.unicode(1));
     System.out.println(Operations.unicode(4));
     System.out.println(Operations.unicode(5));
