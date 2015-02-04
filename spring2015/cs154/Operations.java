@@ -62,8 +62,23 @@ public class Operations {
     }
 
     public static <T> Set<Set<T>> power(Set<T> a) {
-        Set<T> b = new HashSet<T>();
-        return null;
+        Set<Set<T>> b = new HashSet<Set<T>>();
+        if (a.isEmpty()) {
+            b.add(new HashSet<T>());
+            return b;
+        }
+
+        List<T> list = new ArrayList<T>(a);
+        T head = list.get(0);
+        Set<T> rest = new HashSet<T>(list.subList(1, list.size()));
+        for (Set<T> set : power(rest)) {
+            Set<T> newSet = new HashSet<T>();
+            newSet.add(head);
+            newSet.addAll(set);
+            b.add(newSet);
+            b.add(set);
+        }
+        return b;
     }
 
     public static String unicode(int i) {
