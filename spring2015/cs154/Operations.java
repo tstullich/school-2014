@@ -2,6 +2,9 @@ import java.util.*;
 import java.util.function.*;
 
 public class Operations {
+    /**
+     * Creates the intersection of two sets and returns that set
+     */
     public static <T> Set<T> intersect(Set<T> a, Set<T> b) {
         Set<T> c = new HashSet<T>();
         for (T ele : a) {
@@ -11,7 +14,10 @@ public class Operations {
         }
         return c;
     }
-
+    
+    /**
+     *
+     */
     public static <T> Set<T> union(Set<T> a, Set<T> b) {
         Set<T> c = new HashSet<T>();
         for (T ele : a) {
@@ -43,6 +49,9 @@ public class Operations {
         return true;
     }
 
+    /**
+     * Implementation of the filter Lambda function.
+     */
     public static <T> Set<T> filter(Set<T> a, Predicate<T> f) {
         Set<T> b = new HashSet<T>();
         for (T ele : a) {
@@ -53,6 +62,9 @@ public class Operations {
         return b;
     }
 
+    /**
+     * Implementation of the map Lambda function.
+     */
     public static <T> Set<T> map(Set<T> a, UnaryOperator<T> f) {
         Set<T> b = new HashSet<T>();
         for (T ele : a) {
@@ -61,6 +73,11 @@ public class Operations {
         return b;
     }
 
+    /**
+     * O(2^n) implementation for generating the power set of a given set
+     * This will obviously get out of hand quite quickly if N is too large
+     * of an input, so use with caution.
+     */
     public static <T> Set<Set<T>> power(Set<T> a) {
         Set<Set<T>> b = new HashSet<Set<T>>();
         if (a.isEmpty()) {
@@ -81,7 +98,26 @@ public class Operations {
         return b;
     }
 
+    /**
+     * Takes an integer between 0 and 9 and returns the Unicode representation
+     * Throws an error if the integer is not between 0 and 9.
+     */
     public static String unicode(int i) {
-        return "";
+        if (i % 10 == 0) {
+            return "Invalid Integer";
+        }
+        Map<Integer, String> codes = new HashMap<Integer, String>();
+        codes.put(0, "U+0030");
+        codes.put(1, "U+0031");
+        codes.put(2, "U+0032");
+        codes.put(3, "U+0033");
+        codes.put(4, "U+0034");
+        codes.put(5, "U+0035");
+        codes.put(6, "U+0036");
+        codes.put(7, "U+0037");
+        codes.put(8, "U+0038");
+        codes.put(9, "U+0039");
+        
+        return codes.get(i);
     }
 }

@@ -23,9 +23,17 @@ public static void main(String args[]) {
     d.add(3);
     d.add(4);
     d.add(5);
+
+    System.out.println("Power Set");
     Set<Set<Integer>> pset = Operations.power(d);
     for (Set<Integer> s : pset) {
         System.out.println(s);
     }
+    
+    System.out.println(Operations.unicode(1));
+    System.out.println(Operations.unicode(4));
+    System.out.println(Operations.unicode(5));
+    System.out.println(Operations.unicode(10));
+        
     }
 }
