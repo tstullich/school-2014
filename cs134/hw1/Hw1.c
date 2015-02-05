@@ -37,15 +37,30 @@ int main(void) {
         SDL_Quit();
         return 1;
     }
-    
+
     // Setup OpenGL state
     glViewport(0, 0, 640, 480);
     glMatrixMode(GL_PROJECTION);
     glOrtho(0, 640, 480, 0, 0, 100);
     glEnable(GL_TEXTURE_2D);
 
+    // Initialize sprite before displaying it
+    int spriteWidth = 0;
+    int spriteHeight = 0;
+    int spritePosX = 0;
+    int spritePosY = 0;
+    GLuint sprite = glTexImageTGAFile("lambda.tga", &spriteWidth, &spriteHeight);
+    
+    // Logic to keep track of keyboard pushes
+    unsigned char kbPrevState[SDL_NUM_SCANCODES] = {0};
+    const unsigned char* kbState = NULL;
+    kbState = SDL_GetKeyboardState(NULL);
+
     // The game loop
     while (!shouldExit) {
+        // kbState is updated by the message pump. Copy over the old state before the pump!
+        memcpy(kbPrevState, kbState, sizeof(kbPrevState));
+
         // Handle OS message pump
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -54,12 +69,28 @@ int main(void) {
                     shouldExit = 1;
             }
         }
+       
+        // Going to handle keyboard events here
+        kbState = SDL_GetKeyboardState(NULL);
+        if (kbState[SDL_SCANCODE_RIGHT]) {
+           spritePosX++; 
+        }
+        if (kbState[SDL_SCANCODE_LEFT]) {
+            spritePosX--;
+        }
+        if (kbState[SDL_SCANCODE_UP]) {
+            spritePosY--;
+        }
+        if (kbState[SDL_SCANCODE_DOWN]) {
+            spritePosY++;
+        }
 
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Game logic goes here
-    
+        glDrawSprite(sprite, spritePosX, spritePosY, spriteWidth, spriteHeight);
+
         SDL_GL_SwapWindow(window);
     }
 

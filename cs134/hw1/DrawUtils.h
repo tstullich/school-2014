@@ -11,5 +11,5 @@ void glDrawSprite( GLuint tex, int x, int y, int w, int h );
 #ifdef __cplusplus
 }
 #endif
-    
+
 #endif
