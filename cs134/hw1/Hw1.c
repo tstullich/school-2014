@@ -56,6 +56,11 @@ int main(void) {
     const unsigned char* kbState = NULL;
     kbState = SDL_GetKeyboardState(NULL);
 
+    // Going to experiment changing the color of the background a bit
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+
     // The game loop
     while (!shouldExit) {
         // kbState is updated by the message pump. Copy over the old state before the pump!
@@ -73,19 +78,31 @@ int main(void) {
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-           spritePosX++;
+            red = (red == 0) ? 1:0;
+            green = (green == 0) ? 0:1;
+            blue = (blue == 0) ? 1:0;
+            spritePosX++;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
+            red = (red == 0) ? 0:1;
+            green = (green == 0) ? 1:0;
+            blue = (blue == 0) ? 0:1;
             spritePosX--;
         }
         if (kbState[SDL_SCANCODE_UP]) {
+            red = (red == 0) ? 0:1;
+            green = (green == 0) ? 1:0;
+            blue = (blue == 0) ? 0:1;
             spritePosY--;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
+            red = (red == 0) ? 1:0;
+            green = (green == 0) ? 0:1;
+            blue = (blue == 0) ? 1:0;
             spritePosY++;
         }
 
-        glClearColor(0, 0, 0, 1);
+        glClearColor(red, green, blue, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Game logic goes here
