@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "DrawUtils.h"
 
-char shouldExit = 0;
 int main(void) {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -62,6 +61,7 @@ int main(void) {
     int blue = 0;
 
     // The game loop
+    char shouldExit = 0;
     while (!shouldExit) {
         // kbState is updated by the message pump. Copy over the old state before the pump!
         memcpy(kbPrevState, kbState, sizeof(kbPrevState));
