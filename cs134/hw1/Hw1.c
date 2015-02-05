@@ -50,7 +50,7 @@ int main(void) {
     int spritePosX = 0;
     int spritePosY = 0;
     GLuint sprite = glTexImageTGAFile("lambda.tga", &spriteWidth, &spriteHeight);
-    
+
     // Logic to keep track of keyboard pushes
     unsigned char kbPrevState[SDL_NUM_SCANCODES] = {0};
     const unsigned char* kbState = NULL;
@@ -69,11 +69,11 @@ int main(void) {
                     shouldExit = 1;
             }
         }
-       
+
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-           spritePosX++; 
+           spritePosX++;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
             spritePosX--;
