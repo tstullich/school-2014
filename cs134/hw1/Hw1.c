@@ -14,7 +14,7 @@ int main(void) {
     SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_Window* window = SDL_CreateWindow(
-        "TestSDL",
+        "Press the Arrow Keys to make things happen",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         640, 480,
         SDL_WINDOW_OPENGL);
@@ -47,8 +47,8 @@ int main(void) {
     // Initialize sprite before displaying it
     int spriteWidth = 0;
     int spriteHeight = 0;
-    int spritePosX = 0;
-    int spritePosY = 0;
+    int spritePosX = 140;
+    int spritePosY = 60;
     GLuint sprite = glTexImageTGAFile("lambda.tga", &spriteWidth, &spriteHeight);
 
     // Logic to keep track of keyboard pushes
