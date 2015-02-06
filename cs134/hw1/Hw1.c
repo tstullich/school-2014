@@ -56,9 +56,9 @@ int main(void) {
     kbState = SDL_GetKeyboardState(NULL);
 
     // Going to experiment changing the color of the background a bit
-    int red = 0;
-    int green = 0;
-    int blue = 0;
+    float red = 0;
+    float green = 0;
+    float blue = 0;
 
     // The game loop
     char shouldExit = 0;
@@ -78,29 +78,34 @@ int main(void) {
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-            red = (red == 0) ? 1:0;
-            green = (green == 0) ? 0:1;
-            blue = (blue == 0) ? 1:0;
+            red += 0.1;
+            green -= 0.1;
+            blue -= 0.1;
             spritePosX++;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
-            red = (red == 0) ? 0:1;
-            green = (green == 0) ? 1:0;
-            blue = (blue == 0) ? 0:1;
+            red -= 0.1;
+            green += 0.1;
+            blue -= 0.1;
             spritePosX--;
         }
         if (kbState[SDL_SCANCODE_UP]) {
-            red = (red == 0) ? 0:1;
-            green = (green == 0) ? 1:0;
-            blue = (blue == 0) ? 0:1;
+            red -= 0.1;
+            green -= 0.1;
+            blue += 0.1;
             spritePosY--;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
-            red = (red == 0) ? 1:0;
-            green = (green == 0) ? 0:1;
-            blue = (blue == 0) ? 1:0;
+            red -= 0.1;
+            green -= 0.1;
+            blue -= 0.1;
             spritePosY++;
         }
+
+        // If color values are outside of the range [0,1] we set them back to 0
+        red = ((red >= 1.0) || (red <= 0)) ? 0 : red;
+        green = ((green >= 1.0) || (green <= 0)) ? 0 : green;
+        blue = ((blue >= 1.0) || (blue <= 0)) ? 0 : blue;
 
         glClearColor(red, green, blue, 1);
         glClear(GL_COLOR_BUFFER_BIT);
