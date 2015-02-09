@@ -138,7 +138,7 @@ public class Operations {
      * @return The resulting Unicode in String format
      */
     public static String unicode(int i) {
-        if (i % 10 == 0) {
+        if ((i < 0) || (i > 9)) {
             return "Invalid Integer";
         }
 
