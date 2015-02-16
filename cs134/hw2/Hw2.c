@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include "DrawUtils.h"
 
+#define BG_SPRITE_WIDTH 16
+#define BG_SPRITE_HEIGHT 16
+#define BG_SIZE_WIDTH 40
+#define BG_SIZE_HEIGHT 40
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
+
 int main(void) {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -15,7 +22,8 @@ int main(void) {
     SDL_Window* window = SDL_CreateWindow(
         "Press the Arrow Keys to make things happen",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        640, 480,
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
 
     if (!window) {
@@ -38,33 +46,41 @@ int main(void) {
     }
 
     // Setup OpenGL state
-    glViewport(0, 0, 640, 480);
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glMatrixMode(GL_PROJECTION);
-    glOrtho(0, 640, 480, 0, 0, 100);
+    glOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, 100);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Initialize sprite before displaying it
-    int spriteWidth = 0;
-    int spriteHeight = 0;
-    int spritePosX = 140;
-    int spritePosY = 60;
-    GLuint sprite = glTexImageTGAFile("lambda.tga", &spriteWidth, &spriteHeight);
+    // Create the background texture array. Going to load
+    // everything at the same time for now. Maybe there
+    // is a more efficient way to load this later
+    GLuint background[BG_SIZE_WIDTH][BG_SIZE_HEIGHT];
+    for (int i = 0; i < BG_SIZE_WIDTH; i++) {
+        for (int j = 0; j < BG_SIZE_HEIGHT; j++) {
+            background[i][j] = glTexImageTGAFile("lambda.tga", NULL, NULL);
+        }
+    }
 
     // Logic to keep track of keyboard pushes
     unsigned char kbPrevState[SDL_NUM_SCANCODES] = {0};
     const unsigned char* kbState = NULL;
     kbState = SDL_GetKeyboardState(NULL);
 
-    // Going to experiment changing the color of the background a bit
-    float red = 0;
-    float green = 0;
-    float blue = 0;
+    // Need to keep track of when to redraw frames
+    Uint32 lastFrameMs = 0;
+    Uint32 currentFrameMs = SDL_GetTicks();
+
+    // Set options for camera coordinates to draw background
+    int camX = 0;
+    int camY = 0;
 
     // The game loop
     char shouldExit = 0;
     while (!shouldExit) {
         // kbState is updated by the message pump. Copy over the old state before the pump!
+        lastFrameMs = currentFrameMs;
         memcpy(kbPrevState, kbState, sizeof(kbPrevState));
 
         // Handle OS message pump
@@ -79,40 +95,31 @@ int main(void) {
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-            red += 0.1;
-            green -= 0.1;
-            blue -= 0.1;
-            spritePosX++;
+            camX++;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
-            red -= 0.1;
-            green += 0.1;
-            blue -= 0.1;
-            spritePosX--;
         }
         if (kbState[SDL_SCANCODE_UP]) {
-            red -= 0.1;
-            green -= 0.1;
-            blue += 0.1;
-            spritePosY--;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
-            red -= 0.1;
-            green -= 0.1;
-            blue -= 0.1;
-            spritePosY++;
         }
 
-        // If color values are outside of the range [0,1] we set them back to 0
-        red = ((red >= 1.0) || (red <= 0)) ? 0 : red;
-        green = ((green >= 1.0) || (green <= 0)) ? 0 : green;
-        blue = ((blue >= 1.0) || (blue <= 0)) ? 0 : blue;
+        // Calculating frame updates
+        currentFrameMs = SDL_GetTicks();
+        float deltaTime = (currentFrameMs - lastFrameMs) / 1000.0f;
 
-        glClearColor(red, green, blue, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Game logic goes here
-        glDrawSprite(sprite, spritePosX, spritePosY, spriteWidth, spriteHeight);
+        // ->>>>>Game logic goes here <<<<<<-
+        // This draws the background. Currently pretty inefficent but I will
+        // work on this before the due date
+        for (int i = 0; i < (WINDOW_WIDTH / BG_SIZE_WIDTH); i++) {
+            for (int j = camX; j < (WINDOW_HEIGHT / BG_SIZE_HEIGHT) + camX; j++) {
+                glDrawSprite(background[i][j],
+                             i * BG_SIZE_WIDTH,
+                             j * BG_SIZE_HEIGHT,
+                             BG_SIZE_WIDTH,
+                             BG_SIZE_HEIGHT);
+            }
+        }
 
         SDL_GL_SwapWindow(window);
     }
