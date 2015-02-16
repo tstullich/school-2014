@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "DrawUtils.h"
 
 #define BG_SPRITE_WIDTH 16
@@ -59,7 +60,11 @@ int main(void) {
     GLuint background[BG_SIZE_WIDTH][BG_SIZE_HEIGHT];
     for (int i = 0; i < BG_SIZE_WIDTH; i++) {
         for (int j = 0; j < BG_SIZE_HEIGHT; j++) {
-            background[i][j] = glTexImageTGAFile("lambda.tga", NULL, NULL);
+            if (j % 2 == 0) {
+                background[i][j] = glTexImageTGAFile("aperture.tga", NULL, NULL);
+            } else {
+                background[i][j] = glTexImageTGAFile("lambda.tga", NULL, NULL);
+            }
         }
     }
 
@@ -95,32 +100,42 @@ int main(void) {
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-            camX++;
+            printf("Need to redraw\n");
+            camX = (camX < 39) ? camX += 1 : camX;
+            printf("camX: %i\n", camX);
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
+            camX = (camX > 0) ? camX -= 1 : camX;
         }
         if (kbState[SDL_SCANCODE_UP]) {
+            camY = (camY > 0) ?  camY -= 1: camY;
+            printf("camY: %i\n", camY);
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
+            camY = (camY < 39) ? camY += 1 : camY;
+            printf("camY: %i\n", camY);
         }
 
         // Calculating frame updates
         currentFrameMs = SDL_GetTicks();
         float deltaTime = (currentFrameMs - lastFrameMs) / 1000.0f;
 
-        // ->>>>>Game logic goes here <<<<<<-
+        glClearColor(1, 1, 1, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         // This draws the background. Currently pretty inefficent but I will
         // work on this before the due date
+        if (kbState != kbPrevState) {
         for (int i = 0; i < (WINDOW_WIDTH / BG_SIZE_WIDTH); i++) {
-            for (int j = camX; j < (WINDOW_HEIGHT / BG_SIZE_HEIGHT) + camX; j++) {
-                glDrawSprite(background[i][j],
-                             i * BG_SIZE_WIDTH,
-                             j * BG_SIZE_HEIGHT,
+            for (int j = 0; j < (WINDOW_HEIGHT / BG_SIZE_HEIGHT); j++) {
+                glDrawSprite(background[i + camX][j + camY],
+                             (i * BG_SIZE_WIDTH),
+                             (j * BG_SIZE_HEIGHT),
                              BG_SIZE_WIDTH,
                              BG_SIZE_HEIGHT);
             }
         }
-
+        }
         SDL_GL_SwapWindow(window);
     }
 
