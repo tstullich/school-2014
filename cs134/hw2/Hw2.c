@@ -60,7 +60,7 @@ int main(void) {
     GLuint background[BG_SIZE_WIDTH][BG_SIZE_HEIGHT];
     for (int i = 0; i < BG_SIZE_WIDTH; i++) {
         for (int j = 0; j < BG_SIZE_HEIGHT; j++) {
-            if (j % 2 == 0) {
+            if (j % 2 == 0 || i % 2 == 0) {
                 background[i][j] = glTexImageTGAFile("aperture.tga", NULL, NULL);
             } else {
                 background[i][j] = glTexImageTGAFile("lambda.tga", NULL, NULL);
@@ -125,7 +125,6 @@ int main(void) {
 
         // This draws the background. Currently pretty inefficent but I will
         // work on this before the due date
-        if (kbState != kbPrevState) {
         for (int i = 0; i < (WINDOW_WIDTH / BG_SIZE_WIDTH); i++) {
             for (int j = 0; j < (WINDOW_HEIGHT / BG_SIZE_HEIGHT); j++) {
                 glDrawSprite(background[i + camX][j + camY],
@@ -134,7 +133,6 @@ int main(void) {
                              BG_SIZE_WIDTH,
                              BG_SIZE_HEIGHT);
             }
-        }
         }
         SDL_GL_SwapWindow(window);
     }
