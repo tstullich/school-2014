@@ -6,16 +6,16 @@ import java.util.regex.Pattern;
 
 public class Interpreter {
 
-private final static Pattern numbers = Pattern.compile("([-+]?[0-9]*\\.?[0-9]+)[ +]+[\\/\\+\\-\\*]+[ +]+([-+]?[0-9]*\\.?[0-9]+)");
+private final static Pattern numbers = Pattern.compile("([-+]?[0-9]*\\.?[0-9]+)[ +]+[*]+[ +]+([-+]?[0-9]*\\.?[0-9]+)");
 private final static Pattern operator = Pattern.compile("([-+/*])");
 
 public static void execute(String input) throws Exception {
     Matcher numbersMatcher = numbers.matcher(input);
     Matcher operatorMatcher = operator.matcher(input);
-    if (!numbersMatcher.find()) {
-        throw new Exception("Invalid number");
-    } else if (!operatorMatcher.find()) {
+    if (!operatorMatcher.find()) {
         throw new Exception("Invalid operator");
+    } else if (!numbersMatcher.find()) {
+        throw new Exception("Invalid number");
     }
     else {
         float firstNumber = Float.parseFloat(numbersMatcher.group(1));
