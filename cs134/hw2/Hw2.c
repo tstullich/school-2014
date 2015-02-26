@@ -82,8 +82,12 @@ int main(void) {
     }
 
     // Set options for camera coordinates to draw background
-    float camX = 0;
-    float camY = 0;
+    int camX = 0;
+    int camY = 0;
+
+    // Set options for the player coordinates
+    int playerX = 320;
+    int playerY = 240;
 
     // The game loop
     char shouldExit = 0;
@@ -104,16 +108,20 @@ int main(void) {
         // Going to handle keyboard events here
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-            camX = (camX < 39) ? camX += 0.1 : camX;
+            camX = (camX < 640) ? camX += 4 : camX;
+            playerX = (playerX < 640) ? playerX += 1 : playerX;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
-            camX = (camX > 0) ? camX -= 0.1 : camX;
+            camX = (camX > 0) ? camX -= 4 : camX;
+            playerX = (playerX > 0) ? playerX -= 1 : playerX;
         }
         if (kbState[SDL_SCANCODE_UP]) {
-            camY = (camY > 0) ?  camY -= 0.1: camY;
+            camY = (camY > 0) ?  camY -= 4: camY;
+            playerY = (playerY > 0) ?  playerY -= 1: playerY;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
-            camY = (camY < 39) ? camY += 0.1 : camY;
+            camY = (camY < 640) ? camY += 4 : camY;
+            playerY = (playerY < 640) ? playerY += 1 : playerY;
         }
 
         // Calculating frame updates
@@ -126,25 +134,25 @@ int main(void) {
         // This draws the background.
         for (int i = 0; i < 40; i++) {
             for (int j = 0; j < 40; j++) {
-                int tempCamX = (int) floor(camX);
-                int tempCamY = (int) floor(camY);
-                if (background[i + tempCamY][j + tempCamX] == 0) {
+                int tempCamX = camX / 40;
+                int tempCamY = camY / 40;
+                if (background[i][j] == 0) {
                     glDrawSprite(aperture,
-                                 40 * j,
-                                 40 * i,
+                                 (j * 40) - tempCamX,
+                                 (i * 40) - tempCamY,
                                  40,
                                  40);
                 } else {
                     glDrawSprite(lambda,
-                                 40 * j,
-                                 40 * i,
+                                 (j * 40) - tempCamX,
+                                 (i * 40) - tempCamY,
                                  40,
                                  40);
                 }
             }
         }
 
-        glDrawSprite(ryu, camX * 40, camY * 40, 60, 60);
+        glDrawSprite(ryu, playerX, playerY, 60, 60);
         SDL_GL_SwapWindow(window);
     }
 
