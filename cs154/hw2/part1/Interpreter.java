@@ -6,18 +6,38 @@ import java.util.regex.Pattern;
 
 public class Interpreter {
 
-private final static Pattern terms = Pattern.compile("([-+]?[0-9]*\\.?[0-9]+)[ +]+[\\/\\+\\-\\*]+[ +]+([-+]?[0-9]*\\.?[0-9]+)");
+private final static Pattern numbers = Pattern.compile("([-+]?[0-9]*\\.?[0-9]+)[ +]+[\\/\\+\\-\\*]+[ +]+([-+]?[0-9]*\\.?[0-9]+)");
 private final static Pattern operator = Pattern.compile("([-+/*])");
 
 public static void execute(String input) throws Exception {
-    System.out.println(input);
-    Matcher termsMatcher = terms.matcher(input);
+    Matcher numbersMatcher = numbers.matcher(input);
     Matcher operatorMatcher = operator.matcher(input);
-    if ((termsMatcher.find()) && (operatorMatcher.find())) {
-        System.out.println("Valid expression");
-
-    } else {
-        System.out.println("Invalid expression");
+    if (!numbersMatcher.find()) {
+        throw new Exception("Invalid number");
+    } else if (!operatorMatcher.find()) {
+        throw new Exception("Invalid operator");
+    }
+    else {
+        float firstNumber = Float.parseFloat(numbersMatcher.group(1));
+        float secondNumber = Float.parseFloat(numbersMatcher.group(2));
+        float result = 0;
+        String operator = operatorMatcher.group(1);
+        switch(operator) {
+            case "+":
+                result = firstNumber + secondNumber;
+                break;
+            case "-":
+                result = firstNumber - secondNumber;
+                break;
+            case "/":
+                result = firstNumber / secondNumber;
+                break;
+            case "*":
+                result = firstNumber * secondNumber;
+                break;
+            default: throw new Exception("Unexpected error occured");
+        }
+        System.out.println(result);
     }
 }
 
@@ -32,9 +52,9 @@ public static void main(String[] args) {
             System.out.print("-> ");
         }
     } catch (Exception ex) {
-        System.out.println("Trouble");
+        System.out.println(ex.getMessage());
     }
-    
+
     System.out.println("Bye");
     }
 }
