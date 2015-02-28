@@ -13,18 +13,10 @@ public class Concat implements RegEx {
 
         for (int i = 1; i <= str.length(); i++) {
             String sub = str.substring(0, i);
-            if (!first.matches(sub)) {
-                return matches(str.substring(i, str.length()));
+            if (first.matches(sub)) {
+                return second.matches(str.substring(i, str.length()));
             }
         }
-
-        for (int i = 1; i <= str.length(); i++) {
-            String sub = str.substring(0, i);
-            if (!second.matches(sub)) {
-                return matches(str.substring(i, str.length()));
-            }
-        }
-
         return false;
     }
 }
