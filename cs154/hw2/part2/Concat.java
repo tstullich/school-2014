@@ -7,21 +7,18 @@ public class Concat implements RegEx {
     }
 
     public boolean matches(String str) {
-        System.out.println("Concat: " + str);
         int index = 0;
         while (index < str.length() - 1 &&
-               first.matches(str.substring(index, str.length() - first.length()))) {
+               first.matches(str.substring(index, str.length()))) {
             index++;
         }
         if (index == 0) {
             return false;
         }
         while (index < str.length() - 1 &&
-               second.matches(str.substring(index, str.length() - second.length()))) {
+               second.matches(str.substring(index, str.length()))) {
             index++;
         }
         return index == str.length() - 1;
     }
-
-    public int length(){return 0;}
 }

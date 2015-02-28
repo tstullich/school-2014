@@ -7,13 +7,16 @@ public class Choice implements RegEx {
     }
 
     public boolean matches(String str) {
-        int counter = 0;
-        for (int i = 0; i < str.length() - 1; i++) {
-            if (!alt1.matches(Character.toString(str.charAt(i))) &&
-                !alt2.matches(Character.toString(str.charAt(i)))) {
-                return false;
+        if (str.length() == 0) {
+            return true;
+        }
+
+        for (int i = 1; i <= str.length(); i++) {
+            String sub = str.substring(0, i);
+            if (alt1.matches(sub) || alt2.matches(sub)) {
+                return matches(str.substring(i, str.length()));
             }
         }
-        return true;
+        return false;
     }
 }

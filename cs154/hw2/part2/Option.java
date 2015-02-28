@@ -9,16 +9,13 @@ public class Option implements RegEx{
         if (str.length() == 0) {
             return true;
         }
-        // Need to fix substring creation.
-        for (int i = 0; i < str.length() - base.length(); i++) {
-            String sub = str.substring(i, i + base.length());
-            System.out.println("Subs: " + sub);
-            if (!base.matches(sub)) {
-                return false;
+
+        for (int i = 1; i <= str.length(); i++) {
+            String sub = str.substring(0, i);
+            if (base.matches(sub)) {
+                return matches(str.substring(i, str.length()));
             }
         }
-        return true;
+        return false;
     }
-
-    public int length() { return 0; }
 }

@@ -6,11 +6,6 @@ public class Literal implements RegEx {
     }
 
     public boolean matches(String str) {
-        System.out.println("Comparing " + token + " to " + str);
         return token.equals(str);
-    }
-
-    public int length() {
-        return token.length();
     }
 }
