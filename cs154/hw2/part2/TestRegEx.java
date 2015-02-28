@@ -36,8 +36,8 @@ public class TestRegEx {
 
         // tune5 = (do*)~(ray* | (me* | fa*))
         RegEx tune5 = new Concat(tune1, new Choice(tune2, new Choice(tune3, tune4)));
-        System.out.println(tune5.matches("dododomememe"));
-        System.out.println(tune5.matches("dododofafa"));
+//        System.out.println(tune5.matches("dododomememe"));
+//        System.out.println(tune5.matches("dododofafa"));
         System.out.println(tune5.matches("rayrayray"));
     }
 
