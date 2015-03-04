@@ -14,9 +14,17 @@ public class Concat implements RegEx {
         for (int i = 1; i <= str.length(); i++) {
             String sub = str.substring(0, i);
             if (first.matches(sub)) {
-                return second.matches(str.substring(i, str.length()));
+                second.matches(str.substring(i, str.length()));
             }
         }
+
+        for (int j = 1; j <= str.length(); j++) {
+            String sub = str.substring(0, j);
+            if (second.matches(sub)) {
+                return second.matches(str.substring(j, str.length()));
+            }
+        }
+
         return false;
     }
 }
