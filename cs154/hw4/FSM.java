@@ -3,51 +3,124 @@ import java.util.HashSet;
 
 public class FSM {
     private HashSet<State> states;
+    private State startState;
     
     public FSM() {
         states = new HashSet<State>();
-        states.add(new State(0));
+        startState = new State(0);
+        states.add(startState);
+    }
+
+    private State nextState(State currentState, String qualifier) {
+        char nextState = currentState.hasTransition(qualifier.charAt(0));
+        for (State s : states) {
+            if (s.getId() == nextState) {
+                return s;
+            }
+        }
+        return currentState;
     }
 
     public boolean accept(String str) {
-        return false;
+        State currentState = startState;
+        for (char s : str) {
+            currentState = nextState(currentState, s);
+        }
+        return currentState.isFinalState();
     }
 
     public void addFinalState(int state) {
+        for (State s : states) {
+            if (s.getId() == state) {
+                s.setFinalState(true);
+            }
+        }
     }
     
     public void addTransition(char qualifier, int from, int to) {
-        Transition t = new Transition(qualifier, from, to);
+        State state = null;
+        for (State s : states) {
+            if (s.getId() == from) {
+                state = s;
+            }
+        }
+
+        if (state == null) {
+            state = new State(from);
+        }
+        state.addTransition(new Transition(qualifier, to));
+
+        // Need to update starting state
+        if (from == 0) {
+            startState = state;
+        }
+        states.add(state);
     }
 
     public void reset() {
+        states.clear();
     }
 
     class State {
-        private boolean isfinalState;
-        private int stateID;
+        private boolean isFinalState;
+        private int stateId;
         private HashSet<Transition> transitions;
 
-        private State(int stateID) {
-            isfinalState = false;
-            this.stateID = stateID;
+        private State(int stateId) {
+            isFinalState = false;
+            this.stateId = stateId;
             transitions = new HashSet<Transition>();
         }
 
         private void addTransition(Transition t) {
             transitions.add(t);
         }
+
+        private HashSet<Transition> getTransitions() {
+            return transitions;
+        }
+
+        private char hasTransition(char qualifier) {
+            for (Transition t : transitions) {
+                if (t.getId() == qualifier) {
+                    return t.getTo();
+                }
+            }
+            return ' ';
+        }
+
+        private boolean getFinalState() {
+            return isFinalState;
+        }
+
+        private void setFinalState(boolean state) {
+            isFinalState = state;
+        }
+
+        private int getId() {
+            return stateId;
+        }
+
+        private void setId(int stateId) {
+            this.stateId = stateId;
+        }
     }
     
     class Transition { 
         private char qualifier;
-        int from;
-        int to;
+        private int to;
 
-        private Transition(char qualifier, int from, int to) {
+        private Transition(char qualifier, int to) {
             this.qualifier = qualifier;
-            this.from = from;
             this.to = to;
+        }
+
+        private char getQualifier() {
+            return qualifier;
+        }
+
+        private int getTo() {
+            return to;
         }
     }
 }
