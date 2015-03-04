@@ -26,12 +26,16 @@ public class FSM {
     class State {
         private boolean isfinalState;
         private int stateID;
-        private HashMap<Integer, Integer> transitions;
+        private HashSet<Transition> transitions;
 
         private State(int stateID) {
             isfinalState = false;
             this.stateID = stateID;
-            transitions = new HashMap<Integer, Integer>();
+            transitions = new HashSet<Transition>();
+        }
+
+        private void addTransition(Transition t) {
+            transitions.add(t);
         }
     }
     
