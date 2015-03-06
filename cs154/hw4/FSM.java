@@ -12,8 +12,8 @@ public class FSM {
     }
 
     private State nextState(State currentState, char qualifier) {
-        char nextState = currentState.hasTransition(qualifier);
-        if (nextState == ' ') {
+        int nextState = currentState.hasTransition(qualifier);
+        if (nextState == -1) {
            return null; 
         }
 
@@ -66,6 +66,8 @@ public class FSM {
 
     public void reset() {
         states.clear();
+        startState.reset();
+        states.add(startState);
     }
 
     class State {
@@ -87,13 +89,18 @@ public class FSM {
             return transitions;
         }
 
-        private char hasTransition(char qualifier) {
+        private int hasTransition(char qualifier) {
             for (Transition t : transitions) {
                 if (t.getQualifier() == qualifier) {
-                    return (char) t.getTo();
+                    return t.getTo();
                 }
             }
-            return ' ';
+            return -1;
+        }
+
+        private void reset() {
+            isFinalState = false;
+            transitions.clear();
         }
 
         private boolean getFinalState() {
