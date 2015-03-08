@@ -23,10 +23,41 @@ typedef struct Player {
 } Player;
 
 typedef struct Camera {
+    AABB box;
     int posX;
     int posY;
 } Camera;
 
+typedef struct BackgroundSprite {
+    AABB box;
+    int spriteId;
+} BackgroundSprite;
+
+/*typedef struct AnimFrameDef {
+    // combined with the AnimDef's name to make
+    // the actual texture name
+    int frameNum;
+    float frameTime;
+} AnimFrameDef;
+
+typedef struct AnimDef {
+    const char* name;
+    AnimFrameDef frames[20];
+    int numFrames;
+} AnimDef;
+
+// Runtime state for an animation
+struct AnimData {
+    AnimDef* def;
+    int curFrame;
+    float timeToNextFrame;
+    bool isPlaying;
+}; */
+
+//void animTick(AnimData, float);
+//void animReset(AnimData);
+//void animSet(AnimData, AnimDef);
+//void animDraw(AnimData, int, int, int, int);
 void updatePlayer(Player, int);
 void updateCamera(Camera, int);
 bool AABBIntersect(const AABB*, const AABB*);
@@ -92,11 +123,17 @@ int main(void) {
     Uint32 currentFrameMs = SDL_GetTicks();
 
     // Some initialization for the background
-    int background[40][40];
+    BackgroundSprite background[40][40];
     for (int i = 0; i < 40; i++) {
         for (int j = 0; j < 40; j++) {
             // Generate random tiles for now
-            background[i][j] = (rand() % 2 == 0) ? 0 : 1;
+            BackgroundSprite sprite;
+            sprite.spriteId = (rand() % 2 == 0) ? 0 : 1;
+            sprite.box.x = j * 40;
+            sprite.box.y = i * 40;
+            sprite.box.w = 16;
+            sprite.box.h = 16;
+            background[i][j] = sprite;
         }
     }
 
@@ -104,11 +141,19 @@ int main(void) {
     Camera camera;
     camera.posX = 0;
     camera.posY = 0;
+    camera.box.x = 0;
+    camera.box.y = 0;
+    camera.box.w = 640;
+    camera.box.h = 480;
 
     // Set options for the player coordinates
     Player player;
     player.posX = 320;
     player.posY = 240;
+    player.box.x = 320;
+    player.box.y = 240;
+    player.box.w = ryuWidth;
+    player.box.h = ryuWidth;
 
     // The game loop
     char shouldExit = 0;
@@ -143,15 +188,19 @@ int main(void) {
 
         if (kbState[SDL_SCANCODE_D]) {
             camera.posX = (camera.posX < 640) ? camera.posX += 4 : camera.posX;
+            camera.box.x = (camera.box.x < 640) ? camera.box.x += 4 : camera.box.x;
         }
         if (kbState[SDL_SCANCODE_A]) {
             camera.posX = (camera.posX > 0) ? camera.posX -= 4 : camera.posX;
+            camera.box.x = (camera.box.x > 0) ? camera.box.x -= 4 : camera.box.x;
         }
         if (kbState[SDL_SCANCODE_W]) {
             camera.posY = (camera.posY > 0) ? camera.posY -= 4: camera.posY;
+            camera.box.y = (camera.box.y > 0) ? camera.box.y -= 4: camera.box.y;
         }
         if (kbState[SDL_SCANCODE_S]) {
             camera.posY = (camera.posY < 640) ? camera.posY += 4 : camera.posY;
+            camera.box.y = (camera.box.y < 640) ? camera.box.y += 4 : camera.box.y;
         }
 
         // Calculating frame updates
@@ -164,18 +213,20 @@ int main(void) {
         // This draws the background.
         for (int i = 0; i < 40; i++) {
             for (int j = 0; j < 40; j++) {
-                if (background[i][j] == 0) {
-                    glDrawSprite(aperture,
-                                 (j * 40) - camera.posX,
-                                 (i * 40) - camera.posY,
-                                 40,
-                                 40);
-                } else {
-                    glDrawSprite(lambda,
-                                 (j * 40) - camera.posX,
-                                 (i * 40) - camera.posY,
-                                 40,
-                                 40);
+                if (AABBIntersect(&camera.box, &background[i][j].box)) {
+                    if (background[i][j].spriteId == 0) {
+                        glDrawSprite(aperture,
+                                    (j * 40) - camera.posX,
+                                    (i * 40) - camera.posY,
+                                    40,
+                                    40);
+                    } else {
+                        glDrawSprite(lambda,
+                                    (j * 40) - camera.posX,
+                                    (i * 40) - camera.posY,
+                                    40,
+                                    40);
+                    }
                 }
             }
         }
@@ -188,13 +239,50 @@ int main(void) {
     return 0;
 }
 
+/*void animTick( AnimData* data, float dt ) {
+    if( !data->isPlaying ) {
+        return;
+    }
+    int numFrames = sizeof(data->def->frames) / 20;
+    data->timeToNextFrame -= dt;
+    if( data->timeToNextFrame < 0 ) {
+        ++data->curFrame;
+        if( data->curFrame >= numFrames ) {
+            // end of the animation, stop it
+            data->curFrame = numFrames - 1;
+            data->timeToNextFrame = 0;
+            data->isPlaying = false;
+        } else {
+            AnimFrameDef curFrame = data->def->frames[data->curFrame];
+            data->timeToNextFrame += curFrame->frameTime;
+        }
+    }
+}
+
+void animReset(AnimData* anim) {
+    animSet(anim, anim->def);
+}
+
+void animSet(AnimData* anim, AnimDef* toPlay) {
+    anim->def = toPlay;
+    anim->curFrame = 0;
+    anim->timeToNextFrame = def->frames[0].frameTime;
+    anim->isPlaying = true;
+}
+
+void animDraw(AnimData* anim, int x, int y, int w, int h) {
+    int curFrameNum = anim->frames[anim->curFrame].frameNum;
+    GLuint tex = textures[curFrameNum];
+    glDrawSprite(tex, x, y, w, h);
+}*/
+
 void updatePlayer(Player player, int deltaTime) {
 }
 
 void updateCamera(Camera player, int deltaTime) {
 }
 
-bool AABBIntersect( const AABB* box1, const AABB* box2 ) {
+bool AABBIntersect(const AABB* box1, const AABB* box2) {
     // box1 to the right
     if( box1->x > box2->x + box2->w ) {
         return false;
