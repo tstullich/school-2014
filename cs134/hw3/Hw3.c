@@ -12,6 +12,25 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
+typedef struct AABB {
+    int x, y, w, h;
+} AABB;
+
+typedef struct Player {
+    float posX;
+    float posY;
+    AABB box;
+} Player;
+
+typedef struct Camera {
+    int posX;
+    int posY;
+} Camera;
+
+void updatePlayer(Player, int);
+void updateCamera(Camera, int);
+bool AABBIntersect(const AABB*, const AABB*);
+
 int main(void) {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -82,12 +101,14 @@ int main(void) {
     }
 
     // Set options for camera coordinates to draw background
-    int camX = 0;
-    int camY = 0;
+    Camera camera;
+    camera.posX = 0;
+    camera.posY = 0;
 
     // Set options for the player coordinates
-    int playerX = 320;
-    int playerY = 240;
+    Player player;
+    player.posX = 320;
+    player.posY = 240;
 
     // The game loop
     char shouldExit = 0;
@@ -105,23 +126,32 @@ int main(void) {
             }
         }
 
-        // Going to handle keyboard events here
+        // Going to handle keyboard events to move the camera or player
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
-            camX = (camX < 640) ? camX += 4 : camX;
-            playerX = (playerX < 640) ? playerX += 1 : playerX;
+            player.posX = (player.posX < 640) ? player.posX += 1 : player.posX;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
-            camX = (camX > 0) ? camX -= 4 : camX;
-            playerX = (playerX > 0) ? playerX -= 1 : playerX;
+            player.posX = (player.posX > 0) ? player.posX -= 1 : player.posX;
         }
         if (kbState[SDL_SCANCODE_UP]) {
-            camY = (camY > 0) ?  camY -= 4: camY;
-            playerY = (playerY > 0) ?  playerY -= 1: playerY;
+            player.posY = (player.posY > 0) ? player.posY -= 1: player.posY;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
-            camY = (camY < 640) ? camY += 4 : camY;
-            playerY = (playerY < 640) ? playerY += 1 : playerY;
+            player.posY = (player.posY < 640) ? player.posY += 1 : player.posY;
+        }
+
+        if (kbState[SDL_SCANCODE_D]) {
+            camera.posX = (camera.posX < 640) ? camera.posX += 4 : camera.posX;
+        }
+        if (kbState[SDL_SCANCODE_A]) {
+            camera.posX = (camera.posX > 0) ? camera.posX -= 4 : camera.posX;
+        }
+        if (kbState[SDL_SCANCODE_W]) {
+            camera.posY = (camera.posY > 0) ? camera.posY -= 4: camera.posY;
+        }
+        if (kbState[SDL_SCANCODE_S]) {
+            camera.posY = (camera.posY < 640) ? camera.posY += 4 : camera.posY;
         }
 
         // Calculating frame updates
@@ -134,28 +164,54 @@ int main(void) {
         // This draws the background.
         for (int i = 0; i < 40; i++) {
             for (int j = 0; j < 40; j++) {
-                int tempCamX = camX / 40;
-                int tempCamY = camY / 40;
                 if (background[i][j] == 0) {
                     glDrawSprite(aperture,
-                                 (j * 40) - tempCamX,
-                                 (i * 40) - tempCamY,
+                                 (j * 40) - camera.posX,
+                                 (i * 40) - camera.posY,
                                  40,
                                  40);
                 } else {
                     glDrawSprite(lambda,
-                                 (j * 40) - tempCamX,
-                                 (i * 40) - tempCamY,
+                                 (j * 40) - camera.posX,
+                                 (i * 40) - camera.posY,
                                  40,
                                  40);
                 }
             }
         }
 
-        glDrawSprite(ryu, playerX, playerY, 60, 60);
+        glDrawSprite(ryu, player.posX - camera.posX, player.posY - camera.posY, 60, 60);
         SDL_GL_SwapWindow(window);
     }
 
     SDL_Quit();
     return 0;
+}
+
+void updatePlayer(Player player, int deltaTime) {
+}
+
+void updateCamera(Camera player, int deltaTime) {
+}
+
+bool AABBIntersect( const AABB* box1, const AABB* box2 ) {
+    // box1 to the right
+    if( box1->x > box2->x + box2->w ) {
+        return false;
+    }
+
+    // box1 to the left
+    if( box1->x + box1->w < box2->x ) {
+        return false;
+    }
+
+    // box1 below
+    if( box1->y > box2->y + box2->h ) {
+        return false;
+    }
+    // box1 above
+    if( box1->y + box1->h < box2->y ) {
+        return false;
+    }
+    return true;
 }
