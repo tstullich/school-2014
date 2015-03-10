@@ -49,6 +49,13 @@ typedef struct Camera {
     int posY;
 } Camera;
 
+typedef struct Mushroom {
+    float posX;
+    float posY;
+    bool captured;
+    AABB box;
+} Mushroom;
+
 typedef struct BackgroundSprite {
     AABB box;
     int spriteId;
@@ -62,7 +69,7 @@ void updatePlayer(Player, int);
 void updateCamera(Camera, int);
 bool AABBIntersect(const AABB*, const AABB*);
 
-GLuint textures[4];
+GLuint textures[8];
 
 int main(void) {
     // Initialize SDL
@@ -114,12 +121,14 @@ int main(void) {
     GLuint aperture = glTexImageTGAFile("aperture.tga", NULL, NULL);
     int ryuWidth, ryuHeight;
     GLuint ryu = glTexImageTGAFile("ryu.tga", &ryuWidth, &ryuHeight);
-    //textures[0] = lambda;
-    //textures[1] = aperture;
     textures[0] = glTexImageTGAFile("ryu_walk_1.tga", NULL, NULL);
     textures[1] = glTexImageTGAFile("ryu_walk_2.tga", NULL, NULL);
     textures[2] = glTexImageTGAFile("ryu_walk_3.tga", NULL, NULL);
     textures[3] = glTexImageTGAFile("ryu_walk_4.tga", NULL, NULL);
+    textures[4] = glTexImageTGAFile("mushroom_1.tga", NULL, NULL);
+    textures[5] = glTexImageTGAFile("mushroom_2.tga", NULL, NULL);
+    textures[6] = glTexImageTGAFile("mushroom_3.tga", NULL, NULL);
+    textures[7] = glTexImageTGAFile("mushroom_4.tga", NULL, NULL);
 
     // Logic to keep track of keyboard pushes
     unsigned char kbPrevState[SDL_NUM_SCANCODES] = {0};
@@ -165,7 +174,6 @@ int main(void) {
 
     AnimData playerAnimData;
     AnimDef playerAnimDef;
-    player.posX = 320;
     playerAnimData.curFrame = 0;
     playerAnimData.timeToNextFrame = 0.1;
     playerAnimData.isPlaying = true;
@@ -180,6 +188,85 @@ int main(void) {
     playerAnimDef.frames[3].frameNum = 3;
     playerAnimDef.frames[3].frameTime = 0.1;
     playerAnimData.def = &playerAnimDef;
+
+    // Initializing other objects
+    Mushroom m1;
+    m1.captured = false;
+    m1.posX = 100;
+    m1.posY = 30;
+    m1.box.x = 100;
+    m1.box.y = 30;
+    m1.box.w = 16;
+    m1.box.h = 16;
+
+    AnimData m1AnimData;
+    AnimDef m1AnimDef;
+    m1AnimData.curFrame = 0;
+    m1AnimData.timeToNextFrame = 0.1;
+    m1AnimData.isPlaying = true;
+    m1AnimDef.name = "mushroom";
+    m1AnimDef.numFrames = 4;
+    m1AnimDef.frames[0].frameNum = 4;
+    m1AnimDef.frames[0].frameTime = 0.1;
+    m1AnimDef.frames[1].frameNum = 5;
+    m1AnimDef.frames[1].frameTime = 0.1;
+    m1AnimDef.frames[2].frameNum = 6;
+    m1AnimDef.frames[2].frameTime = 0.1;
+    m1AnimDef.frames[3].frameNum = 7;
+    m1AnimDef.frames[3].frameTime = 0.1;
+    m1AnimData.def = &m1AnimDef;
+
+    Mushroom m2;
+    m2.captured = false;
+    m2.posX = 80;
+    m2.posY = 150;
+    m2.box.x = 80;
+    m2.box.y = 150;
+    m2.box.w = 16;
+    m2.box.h = 16;
+
+    AnimData m2AnimData;
+    AnimDef m2AnimDef;
+    m2AnimData.curFrame = 0;
+    m2AnimData.timeToNextFrame = 0.1;
+    m2AnimData.isPlaying = true;
+    m2AnimDef.name = "mushroom";
+    m2AnimDef.numFrames = 4;
+    m2AnimDef.frames[0].frameNum = 4;
+    m2AnimDef.frames[0].frameTime = 0.1;
+    m2AnimDef.frames[1].frameNum = 5;
+    m2AnimDef.frames[1].frameTime = 0.1;
+    m2AnimDef.frames[2].frameNum = 6;
+    m2AnimDef.frames[2].frameTime = 0.1;
+    m2AnimDef.frames[3].frameNum = 7;
+    m2AnimDef.frames[3].frameTime = 0.1;
+    m2AnimData.def = &m2AnimDef;
+
+    Mushroom m3;
+    m3.captured = false;
+    m3.posX = 350;
+    m3.posY = 200;
+    m3.box.x = 350;
+    m3.box.y = 200;
+    m3.box.w = 16;
+    m3.box.h = 16;
+
+    AnimData m3AnimData;
+    AnimDef m3AnimDef;
+    m3AnimData.curFrame = 0;
+    m3AnimData.timeToNextFrame = 0.1;
+    m3AnimData.isPlaying = true;
+    m3AnimDef.name = "mushroom";
+    m3AnimDef.numFrames = 4;
+    m3AnimDef.frames[0].frameNum = 4;
+    m3AnimDef.frames[0].frameTime = 0.1;
+    m3AnimDef.frames[1].frameNum = 5;
+    m3AnimDef.frames[1].frameTime = 0.1;
+    m3AnimDef.frames[2].frameNum = 6;
+    m3AnimDef.frames[2].frameTime = 0.1;
+    m3AnimDef.frames[3].frameNum = 7;
+    m3AnimDef.frames[3].frameTime = 0.1;
+    m3AnimData.def = &m2AnimDef;
 
     // The game loop
     char shouldExit = 0;
@@ -237,12 +324,27 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Update player
-        // Update objects
-
         if (playerAnimData.curFrame == 3) {
             animReset(&playerAnimData);
         } else {
             animTick(&playerAnimData, deltaTime);
+        }
+
+        // Update Objects
+        if (m1AnimData.curFrame == 3) {
+            animReset(&m1AnimData);
+        } else {
+            animTick(&m1AnimData, deltaTime);
+        }
+        if (m2AnimData.curFrame == 3) {
+            animReset(&m2AnimData);
+        } else {
+            animTick(&m2AnimData, deltaTime);
+        }
+        if (m3AnimData.curFrame == 3) {
+            animReset(&m3AnimData);
+        } else {
+            animTick(&m3AnimData, deltaTime);
         }
 
         // This draws the background.
@@ -266,6 +368,18 @@ int main(void) {
             }
         }
 
+        // This draws the other objects
+        if (AABBIntersect(&camera.box, &m1.box) && !m1.captured) {
+            animDraw(&m1AnimData, m1.posX - camera.posX, m1.posY - camera.posY, 40, 40);
+        }
+        if (AABBIntersect(&camera.box, &m2.box) && !m2.captured) {
+            animDraw(&m2AnimData, m2.posX - camera.posX, m2.posY - camera.posY, 40, 40);
+        }
+        if (AABBIntersect(&camera.box, &m3.box) && !m3.captured) {
+            animDraw(&m2AnimData, m3.posX - camera.posX, m3.posY - camera.posY, 40, 40);
+        }
+
+        // THis draws the player
         animDraw(&playerAnimData, player.posX - camera.posX, player.posY - camera.posY, 60, 60);
         SDL_GL_SwapWindow(window);
     }
@@ -299,9 +413,10 @@ void animReset(AnimData* anim) {
 }
 
 void animSet(AnimData* anim, AnimDef* toPlay) {
+    int setFrame = anim->curFrame - (anim->def->numFrames - 1);
     anim->def = toPlay;
-    anim->curFrame = 0;
-    anim->timeToNextFrame = anim->def->frames[0].frameTime;
+    anim->curFrame = setFrame;
+    anim->timeToNextFrame = anim->def->frames[setFrame].frameTime;
     anim->isPlaying = true;
 }
 
@@ -309,12 +424,6 @@ void animDraw(AnimData* anim, int x, int y, int w, int h) {
     int curFrameNum = anim->def->frames[anim->curFrame].frameNum;
     GLuint tex = textures[curFrameNum];
     glDrawSprite(tex, x, y, w, h);
-}
-
-void updatePlayer(Player player, int deltaTime) {
-}
-
-void updateCamera(Camera player, int deltaTime) {
 }
 
 bool AABBIntersect(const AABB* box1, const AABB* box2) {
