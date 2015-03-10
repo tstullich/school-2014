@@ -16,6 +16,27 @@ typedef struct AABB {
     int x, y, w, h;
 } AABB;
 
+typedef struct AnimFrameDef {
+    // combined with the AnimDef's name to make
+    // the actual texture name
+    int frameNum;
+    float frameTime;
+} AnimFrameDef;
+
+typedef struct AnimDef {
+    const char* name;
+    AnimFrameDef frames[4];
+    int numFrames;
+} AnimDef;
+
+// Runtime state for an animation
+typedef struct AnimData {
+    AnimDef* def;
+    int curFrame;
+    float timeToNextFrame;
+    bool isPlaying;
+} AnimData;
+
 typedef struct Player {
     float posX;
     float posY;
@@ -33,34 +54,15 @@ typedef struct BackgroundSprite {
     int spriteId;
 } BackgroundSprite;
 
-/*typedef struct AnimFrameDef {
-    // combined with the AnimDef's name to make
-    // the actual texture name
-    int frameNum;
-    float frameTime;
-} AnimFrameDef;
-
-typedef struct AnimDef {
-    const char* name;
-    AnimFrameDef frames[20];
-    int numFrames;
-} AnimDef;
-
-// Runtime state for an animation
-struct AnimData {
-    AnimDef* def;
-    int curFrame;
-    float timeToNextFrame;
-    bool isPlaying;
-}; */
-
-//void animTick(AnimData, float);
-//void animReset(AnimData);
-//void animSet(AnimData, AnimDef);
-//void animDraw(AnimData, int, int, int, int);
+void animTick(AnimData*, float);
+void animReset(AnimData*);
+void animSet(AnimData*, AnimDef*);
+void animDraw(AnimData*, int, int, int, int);
 void updatePlayer(Player, int);
 void updateCamera(Camera, int);
 bool AABBIntersect(const AABB*, const AABB*);
+
+GLuint textures[4];
 
 int main(void) {
     // Initialize SDL
@@ -112,6 +114,12 @@ int main(void) {
     GLuint aperture = glTexImageTGAFile("aperture.tga", NULL, NULL);
     int ryuWidth, ryuHeight;
     GLuint ryu = glTexImageTGAFile("ryu.tga", &ryuWidth, &ryuHeight);
+    //textures[0] = lambda;
+    //textures[1] = aperture;
+    textures[0] = glTexImageTGAFile("ryu_walk_1.tga", NULL, NULL);
+    textures[1] = glTexImageTGAFile("ryu_walk_2.tga", NULL, NULL);
+    textures[2] = glTexImageTGAFile("ryu_walk_3.tga", NULL, NULL);
+    textures[3] = glTexImageTGAFile("ryu_walk_4.tga", NULL, NULL);
 
     // Logic to keep track of keyboard pushes
     unsigned char kbPrevState[SDL_NUM_SCANCODES] = {0};
@@ -155,16 +163,34 @@ int main(void) {
     player.box.w = ryuWidth;
     player.box.h = ryuWidth;
 
+    AnimData playerAnimData;
+    AnimDef playerAnimDef;
+    player.posX = 320;
+    playerAnimData.curFrame = 0;
+    playerAnimData.timeToNextFrame = 0.1;
+    playerAnimData.isPlaying = true;
+    playerAnimDef.name = "ryu";
+    playerAnimDef.numFrames = 4;
+    playerAnimDef.frames[0].frameNum = 0;
+    playerAnimDef.frames[0].frameTime = 0.1;
+    playerAnimDef.frames[1].frameNum = 1;
+    playerAnimDef.frames[1].frameTime = 0.1;
+    playerAnimDef.frames[2].frameNum = 2;
+    playerAnimDef.frames[2].frameTime = 0.1;
+    playerAnimDef.frames[3].frameNum = 3;
+    playerAnimDef.frames[3].frameTime = 0.1;
+    playerAnimData.def = &playerAnimDef;
+
     // The game loop
     char shouldExit = 0;
-    while (!shouldExit) {
+    while(!shouldExit) {
         // kbState is updated by the message pump. Copy over the old state before the pump!
         lastFrameMs = currentFrameMs;
         memcpy(kbPrevState, kbState, sizeof(kbPrevState));
 
         // Handle OS message pump
         SDL_Event event;
-        while (SDL_PollEvent(&event)) {
+        while(SDL_PollEvent(&event)) {
             switch(event.type) {
                 case SDL_QUIT:
                     shouldExit = 1;
@@ -210,6 +236,15 @@ int main(void) {
         glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Update player
+        // Update objects
+
+        if (playerAnimData.curFrame == 3) {
+            animReset(&playerAnimData);
+        } else {
+            animTick(&playerAnimData, deltaTime);
+        }
+
         // This draws the background.
         for (int i = 0; i < 40; i++) {
             for (int j = 0; j < 40; j++) {
@@ -231,7 +266,7 @@ int main(void) {
             }
         }
 
-        glDrawSprite(ryu, player.posX - camera.posX, player.posY - camera.posY, 60, 60);
+        animDraw(&playerAnimData, player.posX - camera.posX, player.posY - camera.posY, 60, 60);
         SDL_GL_SwapWindow(window);
     }
 
@@ -239,22 +274,22 @@ int main(void) {
     return 0;
 }
 
-/*void animTick( AnimData* data, float dt ) {
-    if( !data->isPlaying ) {
+void animTick(AnimData* data, float dt) {
+    if(!data->isPlaying) {
         return;
     }
-    int numFrames = sizeof(data->def->frames) / 20;
+    int numFrames = sizeof(data->def->frames) / sizeof(AnimFrameDef);
     data->timeToNextFrame -= dt;
-    if( data->timeToNextFrame < 0 ) {
+    if(data->timeToNextFrame < 0) {
         ++data->curFrame;
-        if( data->curFrame >= numFrames ) {
+        if(data->curFrame >= numFrames) {
             // end of the animation, stop it
             data->curFrame = numFrames - 1;
             data->timeToNextFrame = 0;
             data->isPlaying = false;
         } else {
             AnimFrameDef curFrame = data->def->frames[data->curFrame];
-            data->timeToNextFrame += curFrame->frameTime;
+            data->timeToNextFrame += curFrame.frameTime;
         }
     }
 }
@@ -266,15 +301,15 @@ void animReset(AnimData* anim) {
 void animSet(AnimData* anim, AnimDef* toPlay) {
     anim->def = toPlay;
     anim->curFrame = 0;
-    anim->timeToNextFrame = def->frames[0].frameTime;
+    anim->timeToNextFrame = anim->def->frames[0].frameTime;
     anim->isPlaying = true;
 }
 
 void animDraw(AnimData* anim, int x, int y, int w, int h) {
-    int curFrameNum = anim->frames[anim->curFrame].frameNum;
+    int curFrameNum = anim->def->frames[anim->curFrame].frameNum;
     GLuint tex = textures[curFrameNum];
     glDrawSprite(tex, x, y, w, h);
-}*/
+}
 
 void updatePlayer(Player player, int deltaTime) {
 }
