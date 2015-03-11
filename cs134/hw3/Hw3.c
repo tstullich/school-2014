@@ -196,8 +196,8 @@ int main(void) {
     m1.posY = 30;
     m1.box.x = 100;
     m1.box.y = 30;
-    m1.box.w = 16;
-    m1.box.h = 16;
+    m1.box.w = 40;
+    m1.box.h = 40;
 
     AnimData m1AnimData;
     AnimDef m1AnimDef;
@@ -222,8 +222,8 @@ int main(void) {
     m2.posY = 150;
     m2.box.x = 80;
     m2.box.y = 150;
-    m2.box.w = 16;
-    m2.box.h = 16;
+    m2.box.w = 40;
+    m2.box.h = 40;
 
     AnimData m2AnimData;
     AnimDef m2AnimDef;
@@ -244,12 +244,12 @@ int main(void) {
 
     Mushroom m3;
     m3.captured = false;
-    m3.posX = 350;
+    m3.posX = 200;
     m3.posY = 200;
-    m3.box.x = 350;
+    m3.box.x = 200;
     m3.box.y = 200;
-    m3.box.w = 16;
-    m3.box.h = 16;
+    m3.box.w = 40;
+    m3.box.h = 40;
 
     AnimData m3AnimData;
     AnimDef m3AnimDef;
@@ -288,15 +288,19 @@ int main(void) {
         kbState = SDL_GetKeyboardState(NULL);
         if (kbState[SDL_SCANCODE_RIGHT]) {
             player.posX = (player.posX < 640) ? player.posX += 1 : player.posX;
+            player.box.x = (player.box.x < 640) ? player.box.x += 1 : player.box.x;
         }
         if (kbState[SDL_SCANCODE_LEFT]) {
             player.posX = (player.posX > 0) ? player.posX -= 1 : player.posX;
+            player.box.x = (player.box.x > 0) ? player.box.x -= 1 : player.box.x;
         }
         if (kbState[SDL_SCANCODE_UP]) {
             player.posY = (player.posY > 0) ? player.posY -= 1: player.posY;
+            player.box.y = (player.box.y > 0) ? player.box.y -= 1 : player.box.y;
         }
         if (kbState[SDL_SCANCODE_DOWN]) {
             player.posY = (player.posY < 640) ? player.posY += 1 : player.posY;
+            player.box.y = (player.box.y < 640) ? player.box.y += 1 : player.box.y;
         }
 
         if (kbState[SDL_SCANCODE_D]) {
@@ -345,6 +349,17 @@ int main(void) {
             animReset(&m3AnimData);
         } else {
             animTick(&m3AnimData, deltaTime);
+        }
+
+        // Check for collisions and update
+        if (AABBIntersect(&player.box, &m1.box)) {
+            m1.captured = true;
+        }
+        if (AABBIntersect(&player.box, &m2.box)) {
+            m2.captured = true;
+        }
+        if (AABBIntersect(&player.box, &m3.box)) {
+            m3.captured = true;
         }
 
         // This draws the background.
