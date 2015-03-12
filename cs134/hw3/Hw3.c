@@ -119,8 +119,6 @@ int main(void) {
     // is a more efficient way to load this later
     GLuint lambda = glTexImageTGAFile("lambda.tga", NULL, NULL);
     GLuint aperture = glTexImageTGAFile("aperture.tga", NULL, NULL);
-    int ryuWidth, ryuHeight;
-    GLuint ryu = glTexImageTGAFile("ryu.tga", &ryuWidth, &ryuHeight);
     textures[0] = glTexImageTGAFile("ryu_walk_1.tga", NULL, NULL);
     textures[1] = glTexImageTGAFile("ryu_walk_2.tga", NULL, NULL);
     textures[2] = glTexImageTGAFile("ryu_walk_3.tga", NULL, NULL);
@@ -169,8 +167,8 @@ int main(void) {
     player.posY = 240;
     player.box.x = 320;
     player.box.y = 240;
-    player.box.w = ryuWidth;
-    player.box.h = ryuWidth;
+    player.box.w = 60;
+    player.box.h = 60;
 
     AnimData playerAnimData;
     AnimDef playerAnimDef;
