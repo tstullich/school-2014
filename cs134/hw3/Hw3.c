@@ -148,8 +148,8 @@ int main(void) {
             sprite.spriteId = (rand() % 2 == 0) ? 0 : 1;
             sprite.box.x = j * 40;
             sprite.box.y = i * 40;
-            sprite.box.w = 16;
-            sprite.box.h = 16;
+            sprite.box.w = 40;
+            sprite.box.h = 40;
             background[i][j] = sprite;
         }
     }
