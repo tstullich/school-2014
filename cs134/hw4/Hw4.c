@@ -59,6 +59,7 @@ typedef struct Mushroom {
 typedef struct BackgroundSprite {
     AABB box;
     int spriteId;
+    bool collision;
 } BackgroundSprite;
 
 void animTick(AnimData*, float);
@@ -139,11 +140,12 @@ int main(void) {
 
     // Some initialization for the background
     BackgroundSprite background[40][40];
+    AABB backgroundBox;
     for (int i = 0; i < 40; i++) {
         for (int j = 0; j < 40; j++) {
-            // Generate random tiles for now
             BackgroundSprite sprite;
-            sprite.spriteId = (rand() % 2 == 0) ? 0 : 1;
+            sprite.spriteId = ((i % 2 == 0) || (j % 2 == 0)) ? 0 : 1;
+            sprite.collision = (spriteId == 1) ? true : false;
             sprite.box.x = j * 40;
             sprite.box.y = i * 40;
             sprite.box.w = 40;
@@ -190,10 +192,10 @@ int main(void) {
     // Initializing other objects
     Mushroom m1;
     m1.captured = false;
-    m1.posX = 100;
-    m1.posY = 30;
-    m1.box.x = 100;
-    m1.box.y = 30;
+    m1.posX = 160;
+    m1.posY = 40;
+    m1.box.x = 160;
+    m1.box.y = 40;
     m1.box.w = 40;
     m1.box.h = 40;
 
@@ -217,9 +219,9 @@ int main(void) {
     Mushroom m2;
     m2.captured = false;
     m2.posX = 80;
-    m2.posY = 150;
+    m2.posY = 160;
     m2.box.x = 80;
-    m2.box.y = 150;
+    m2.box.y = 160;
     m2.box.w = 40;
     m2.box.h = 40;
 
@@ -242,9 +244,9 @@ int main(void) {
 
     Mushroom m3;
     m3.captured = false;
-    m3.posX = 200;
+    m3.posX = 240;
     m3.posY = 200;
-    m3.box.x = 200;
+    m3.box.x = 240;
     m3.box.y = 200;
     m3.box.w = 40;
     m3.box.h = 40;
@@ -392,8 +394,8 @@ int main(void) {
             animDraw(&m2AnimData, m3.posX - camera.posX, m3.posY - camera.posY, 40, 40);
         }
 
-        // THis draws the player
-        animDraw(&playerAnimData, player.posX - camera.posX, player.posY - camera.posY, 60, 60);
+        // This draws the player
+        animDraw(&playerAnimData, player.posX - camera.posX, player.posY - camera.posY, 40, 40);
         SDL_GL_SwapWindow(window);
     }
 
