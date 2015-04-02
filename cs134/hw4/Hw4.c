@@ -40,6 +40,7 @@ typedef struct AnimData {
 typedef struct Player {
     float posX;
     float posY;
+    int nearMissTries;
     AABB box;
 } Player;
 
@@ -56,11 +57,11 @@ typedef struct Mushroom {
     AABB box;
 } Mushroom;
 
-typedef struct BackgroundSprite {
+typedef struct BackgroundTile {
     AABB box;
     int spriteId;
     bool collision;
-} BackgroundSprite;
+} BackgroundTile;
 
 void animTick(AnimData*, float);
 void animReset(AnimData*);
@@ -139,18 +140,18 @@ int main(void) {
     Uint32 currentFrameMs = SDL_GetTicks();
 
     // Some initialization for the background
-    BackgroundSprite background[40][40];
+    BackgroundTile background[40][40];
     AABB backgroundBox;
     for (int i = 0; i < 40; i++) {
         for (int j = 0; j < 40; j++) {
-            BackgroundSprite sprite;
-            sprite.spriteId = ((i % 2 == 0) || (j % 2 == 0)) ? 0 : 1;
-            sprite.collision = (spriteId == 1) ? true : false;
-            sprite.box.x = j * 40;
-            sprite.box.y = i * 40;
-            sprite.box.w = 40;
-            sprite.box.h = 40;
-            background[i][j] = sprite;
+            BackgroundTile tile;
+            tile.spriteId = ((i % 2 == 0) || (j % 2 == 0)) ? 0 : 1;
+            tile.collision = (tile.spriteId == 1) ? true : false;
+            tile.box.x = j * 40;
+            tile.box.y = i * 40;
+            tile.box.w = 40;
+            tile.box.h = 40;
+            background[i][j] = tile;
         }
     }
 
@@ -165,12 +166,15 @@ int main(void) {
 
     // Set options for the player coordinates
     Player player;
-    player.posX = 320;
-    player.posY = 240;
-    player.box.x = 320;
-    player.box.y = 240;
-    player.box.w = 60;
-    player.box.h = 60;
+    player.posX = 321;
+    player.posY = 241;
+    player.box.x = 321;
+    player.box.y = 241;
+    player.box.w = 37;
+    player.box.h = 37;
+    player.nearMissTries = 5;
+    int playerPrevX = 321;
+    int playerPrevY = 241;
 
     AnimData playerAnimData;
     AnimDef playerAnimDef;
@@ -273,6 +277,9 @@ int main(void) {
     while(!shouldExit) {
         // kbState is updated by the message pump. Copy over the old state before the pump!
         lastFrameMs = currentFrameMs;
+        playerPrevX = player.posX;
+        playerPrevY = player.posY;
+
         memcpy(kbPrevState, kbState, sizeof(kbPrevState));
 
         // Handle OS message pump
@@ -351,7 +358,7 @@ int main(void) {
             animTick(&m3AnimData, deltaTime);
         }
 
-        // Check for collisions and update
+        // Check for mushroom collisions and update
         if (AABBIntersect(&player.box, &m1.box)) {
             m1.captured = true;
         }
@@ -361,6 +368,24 @@ int main(void) {
         if (AABBIntersect(&player.box, &m3.box)) {
             m3.captured = true;
         }
+
+        // Check for wall collisions and update
+        for (int i = 0; i < 40; i++) {
+            for (int j = 0; j < 40; j++) {
+                if (AABBIntersect(&camera.box, &background[i][j].box)) {
+                    // If a player collides with wall reset position
+                    if (AABBIntersect(&player.box, &background[i][j].box) && background[i][j].collision) {
+                        player.posX = playerPrevX;
+                        player.box.x = playerPrevX;
+                        player.posY = playerPrevY;
+                        player.box.y = playerPrevY;
+                    }
+                }
+            }
+        }
+
+        playerPrevX = player.posX;
+        playerPrevY = player.posY;
 
         // This draws the background.
         for (int i = 0; i < 40; i++) {
