@@ -170,8 +170,8 @@ int main(void) {
     player.posY = 241;
     player.box.x = 321;
     player.box.y = 241;
-    player.box.w = 37;
-    player.box.h = 37;
+    player.box.w = 30;
+    player.box.h = 30;
     player.nearMissTries = 5;
     int playerPrevX = 321;
     int playerPrevY = 241;
