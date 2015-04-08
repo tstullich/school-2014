@@ -3,7 +3,10 @@ public class Combinators {
         Parser parser = new Parser();
         parser.setParser (
             result-> {
-                if (result.fail) return result;
+                if (result.fail) {
+                    return result;
+                }
+
                 Choice answer = new Choice();
                 answer.choice = p1.apply(result);
                 if (answer.choice.fail) {
@@ -18,8 +21,26 @@ public class Combinators {
             return parser;
     }
 
-    public static Parser seq(Parser p1, Parser p2) {}
-    public static Parser rep(Parser p) {}
-    public static Parser opt(Parser p) {}
-    public static Parser regEx(String regEx) {}
+    public static Parser seq(Parser p1, Parser p2) {
+        return null;
+    }
+    public static Parser rep(Parser p) {
+        return null;
+    }
+    public static Parser opt(Parser p) {
+        return null;
+    }
+
+    public static Parser regEx(String regEx) {
+        Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+                Literal literal = new Literal(regEx);
+                return literal;
+            });
+        return parser;
+    }
 }
