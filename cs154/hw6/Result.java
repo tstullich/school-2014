@@ -22,6 +22,7 @@ public class Result {
     public Result(String s) {
         this(s, "\\s+");
     }
+
     public Result() {
         unseen = new ArrayList<String>();
         fail = false;
