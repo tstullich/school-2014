@@ -6,6 +6,24 @@ public class DemoParsers {
         System.out.println("pending = " + tree.pending());
     }
 
+    public static void testExpParser() {
+        String s = "42";
+        test(ExpParsers.number, s);
+        s = "29";
+        test(ExpParsers.number, s);
+        s = "*";
+        test(ExpParsers.operator, s);
+        s = "-";
+        test(ExpParsers.operator, s);
+        s = "42 + 91 * 13 + 2";
+        test(ExpParsers.exp, s);
+        s = "123";
+        test(ExpParsers.exp, s);
+        s = "15 * 6 - 1-0";
+        test(ExpParsers.exp, s);
+    }
+
     public static void main(String[] args) {
+        testExpParser();
     }
 }
