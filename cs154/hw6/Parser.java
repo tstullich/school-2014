@@ -1,13 +1,10 @@
-import java.util.function;
+import java.util.function.*;
 
-public class Parser {
+public class Parser implements UnaryOperator<Result> {
     protected UnaryOperator<Result> parser;
-    public Parser() {
-        parser = new UnaryOperator<Result>();
-    }
 
     public Result apply(Result r) {
-        parser.apply(Result);
+        parser.apply(r);
         return r;
     }
 

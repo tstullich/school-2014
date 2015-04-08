@@ -21,6 +21,5 @@ public class Combinators {
     public static Parser seq(Parser p1, Parser p2) {}
     public static Parser rep(Parser p) {}
     public static Parser opt(Parser p) {}
-    public static Parser prefix(String regEx) {}
-
+    public static Parser regEx(String regEx) {}
 }

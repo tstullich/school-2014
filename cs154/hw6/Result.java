@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.ArrayList;
+
 public class Result {
     protected List<String> unseen;
     protected boolean fail;
