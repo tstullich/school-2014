@@ -2,7 +2,7 @@ public class Combinators {
     public static Parser alt(Parser p1, Parser p2) {
         Parser parser = new Parser();
         parser.setParser(
-            result-> {
+            result -> {
                 if (result.fail) {
                     return result;
                 }
@@ -22,14 +22,44 @@ public class Combinators {
     }
 
     public static Parser seq(Parser p1, Parser p2) {
-        Parser parser = new Parser();
-        parser.setParser();
+    /*  
+     *  Commenting this out for now
+     *  Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+                Iteration 
+            });*/
         return null;
     }
     public static Parser rep(Parser p) {
+        Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+                Iteration iteration = new Iteration();
+                for (Result res : result.unseen) {
+                }
+            });
         return null;
     }
     public static Parser opt(Parser p) {
+        Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+                Option opt = new Option();
+                opt.option.apply(result);
+                if (opt.option.fail) {
+                    return opt;
+                }
+            })
         return null;
     }
 
