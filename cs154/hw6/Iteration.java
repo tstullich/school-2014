@@ -1,5 +1,11 @@
 public class Iteration extends Result {
-    protected Result iteration;
+    protected ArrayList<Result> iteration;
 
-    public Iteration() {}
+    public Iteration() {
+        iteration = new ArrayList<Result>();
+    }
+
+    public String toString() {
+        return " Iteration ";
+    }
 }

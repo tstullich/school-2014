@@ -3,4 +3,8 @@ public class Concatenation extends Result {
     protected Result concat2;
 
     public Concatenation() {}
+
+    public String toString() {
+        return " Concatenation ";
+    }
 }

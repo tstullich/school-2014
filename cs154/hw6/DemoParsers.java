@@ -9,7 +9,7 @@ public class DemoParsers {
     public static void testExpParser() {
         String s = "42";
         test(ExpParsers.number, s);
-        s = "29";
+        s = "29z";
         test(ExpParsers.number, s);
         s = "*";
         test(ExpParsers.operator, s);
