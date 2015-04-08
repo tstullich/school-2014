@@ -1,9 +1,8 @@
 public class Concatenation extends Result {
-    protected Result concat1;
-    protected Result concat2;
+    protected Result first;
+    protected Result second;
 
-    public Concatenation() {}
-
+    @Override
     public String toString() {
         return " Concatenation ";
     }

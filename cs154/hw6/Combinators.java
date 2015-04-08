@@ -18,38 +18,41 @@ public class Combinators {
                 answer.unseen = answer.choice.unseen;
                 return answer;
             });
+
             return parser;
     }
 
     public static Parser seq(Parser p1, Parser p2) {
-    /*  
-     *  Commenting this out for now
-     *  Parser parser = new Parser();
-        parser.setParser(
-            result -> {
-                if (result.fail) {
-                    return result;
-                }
-                Iteration 
-            });*/
-        return null;
-    }
-    public static Parser rep(Parser p) {
         Parser parser = new Parser();
         parser.setParser(
             result -> {
                 if (result.fail) {
                     return result;
                 }
-                Iteration iteration = new Iteration();
-                for (Result res : result.unseen) {
+
+                Concatenation concatenation = new Concatenation();
+                concatenation.first = p1.apply(result);
+                if (concatenation.first.fail)  {
+                    return result;
                 }
+
+                concatenation.second = p2.apply(result);
+                if (concatenation.second.fail) {
+                    return result;
+                }
+
+                return concatenation;
             });
+        return parser;
+    }
+
+    public static Parser rep(Parser p) {
         return null;
     }
+
     public static Parser opt(Parser p) {
         Parser parser = new Parser();
-        parser.setParser(
+        /*parser.setParser(
             result -> {
                 if (result.fail) {
                     return result;
@@ -59,7 +62,8 @@ public class Combinators {
                 if (opt.option.fail) {
                     return opt;
                 }
-            })
+                // Need to return
+            });*/
         return null;
     }
 

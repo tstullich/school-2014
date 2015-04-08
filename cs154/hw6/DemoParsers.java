@@ -19,7 +19,7 @@ public class DemoParsers {
         test(ExpParsers.exp, s);
         s = "123";
         test(ExpParsers.exp, s);
-        s = "15 * 6 - 1-0";
+        s = "15 * 6 - 10";
         test(ExpParsers.exp, s);
     }
 
