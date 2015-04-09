@@ -4,6 +4,6 @@ public class Concatenation extends Result {
 
     @Override
     public String toString() {
-        return " Concatenation ";
+        return "[ ~ " + first.toString() + " ] " + second.toString() + "]";
     }
 }

@@ -21,6 +21,8 @@ public class DemoParsers {
         test(ExpParsers.exp, s);
         s = "15 * 6 - 10";
         test(ExpParsers.exp, s);
+        s = "15 * 6 + 10";
+        test(ExpParsers.exp, s);
     }
 
     public static void main(String[] args) {

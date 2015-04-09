@@ -4,6 +4,6 @@ public class Choice extends Result {
     public Choice() {}
 
     public String toString() {
-        return " Choice ";
+        return "[ | " + choice.toString() + " ]";
     }
 }

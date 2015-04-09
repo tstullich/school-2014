@@ -36,11 +36,13 @@ public class Combinators {
                     return result;
                 }
 
+                concatenation.unseen = concatenation.first.unseen;
                 concatenation.second = p2.apply(result);
                 if (concatenation.second.fail) {
                     return result;
                 }
 
+                concatenation.unseen = concatenation.second.unseen;
                 return concatenation;
             });
         return parser;
@@ -51,19 +53,6 @@ public class Combinators {
     }
 
     public static Parser opt(Parser p) {
-        Parser parser = new Parser();
-        /*parser.setParser(
-            result -> {
-                if (result.fail) {
-                    return result;
-                }
-                Option opt = new Option();
-                opt.option.apply(result);
-                if (opt.option.fail) {
-                    return opt;
-                }
-                // Need to return
-            });*/
         return null;
     }
 
@@ -71,16 +60,23 @@ public class Combinators {
         Parser parser = new Parser();
         parser.setParser(
             result -> {
-                // No more tokens to parse. We are done
-                if (result.unseen.size() == 0) {
+                // Parsing failed earlier. We are done
+                if (result.fail) {
                     result.fail = true;
                     return result;
                 }
 
-                // Need to check tokens if they match
+                Literal literal = new Literal();
+                // Need to handle an empty list somehow
+                if (result.unseen.size() == 0) {
+                    literal.fail = true;
+                    return literal;
+                }
+
+                // Need to check token against regex
                 String token = result.unseen.remove(0);
                 if (token.matches(regEx)) {
-                    Literal literal = new Literal(token);
+                    literal = new Literal(token);
                     return literal;
                 }
                 else {
