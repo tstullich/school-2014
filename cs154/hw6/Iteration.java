@@ -1,13 +1,17 @@
 import java.util.ArrayList;
 
 public class Iteration extends Result {
-    protected ArrayList<Result> iteration;
+    protected ArrayList<Result> iterations;
 
     public Iteration() {
-        iteration = new ArrayList<Result>();
+        iterations = new ArrayList<Result>();
     }
 
     public String toString() {
-        return " Iteration ";
+        String s = "";
+        for (Result r : iterations) {
+            s += r.toString();
+        }
+        return s;
     }
 }

@@ -3,6 +3,6 @@ public class Option extends Result {
    public Option() {}
 
    public String toString() {
-       return " Option ";
+       return option.toString();
    }
 }

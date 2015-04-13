@@ -49,40 +49,64 @@ public class Combinators {
     }
 
     public static Parser rep(Parser p) {
-        return null;
+        Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+
+                Iteration iteration = new Iteration();
+                while (!result.fail) {
+                    p.apply(result);
+                    iteration.iterations.add(result);
+                }
+
+                return iteration;
+            });
+        return parser;
     }
 
     public static Parser opt(Parser p) {
-        return null;
+        Parser parser = new Parser();
+        parser.setParser(
+            result -> {
+                if (result.fail) {
+                    return result;
+                }
+
+                Option option = new Option();
+                option.option = p.apply(result);
+                if (option.option.fail) {
+                    return result;
+                }
+                else {
+                    return option;
+                }
+            });
+        return parser;
     }
 
     public static Parser regEx(String regEx) {
         Parser parser = new Parser();
         parser.setParser(
             result -> {
-                // Parsing failed earlier. We are done
-                if (result.fail) {
-                    result.fail = true;
-                    return result;
-                }
-
                 Literal literal = new Literal();
-                // Need to handle an empty list somehow
-                if (result.unseen.size() == 0) {
+                if (result.unseen.isEmpty()) {
                     literal.fail = true;
                     return literal;
                 }
 
-                // Need to check token against regex
-                String token = result.unseen.remove(0);
-                if (token.matches(regEx)) {
-                    literal = new Literal(token);
-                    return literal;
+                literal.token = result.unseen.get(0);
+                if (literal.token.matches(regEx)) {
+                    result.unseen.remove(0);
+                    literal.unseen = result.unseen;
                 }
                 else {
-                    result.fail = true;
-                    return result;
+                    literal.fail = true;
+                    literal.unseen = result.unseen;
                 }
+                return literal;
             });
         return parser;
     }
