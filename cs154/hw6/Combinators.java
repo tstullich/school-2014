@@ -81,6 +81,7 @@ public class Combinators {
                     return result;
                 }
                 else {
+                    option.unseen = option.option.unseen;
                     return option;
                 }
             });
@@ -97,16 +98,16 @@ public class Combinators {
                     return literal;
                 }
 
-                literal.token = result.unseen.get(0);
+                literal.token = result.unseen.remove(0);
                 if (literal.token.matches(regEx)) {
-                    result.unseen.remove(0);
+                    literal.token = literal.token;
                     literal.unseen = result.unseen;
+                    return literal;
                 }
                 else {
-                    literal.fail = true;
-                    literal.unseen = result.unseen;
+                    result.fail = true;
+                    return result;
                 }
-                return literal;
             });
         return parser;
     }
