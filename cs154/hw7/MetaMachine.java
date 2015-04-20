@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 @SuppressWarnings("unchecked")
 public class MetaMachine {
-    public void execute(String ... args) throws Exception {
+    public String execute(String ... args) throws Exception {
         try {
             Class c = Class.forName(args[0]);
             Method meth = c.getMethod(args[1], String[].class);
@@ -16,5 +16,7 @@ public class MetaMachine {
         catch (Exception e) {
             System.out.println(e);
         }
+
+        return "done";
     }
 }
