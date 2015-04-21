@@ -5,12 +5,12 @@ public class TuringMachine {
     private Map<Trigger, Action> program;
     private Set<Integer> finalStates; // run halts when state is a member
     private int state; // the current state
-    
+
     public TuringMachine(Tape input) {
         tape = input;
         state = 0;
     }
-   
+
     public void addStep(Trigger t, Action a) {
         program.add(t, a);
     }

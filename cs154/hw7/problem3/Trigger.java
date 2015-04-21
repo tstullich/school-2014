@@ -10,8 +10,8 @@ public class Trigger {
     public int getState() {
         return currentState;
     }
-    
+
     public int getCurrentBit() {
         return currentBit;
     }
-}   
+}
