@@ -36,7 +36,10 @@ public class Tape {
     }
 
     public void moveHead(int steps) {
-        head = (head < 0) ? head = 0 : head += steps;
+        head += steps;
+        if (head < 0) {
+            head = 0;
+        }
         growTape();
     }
 }

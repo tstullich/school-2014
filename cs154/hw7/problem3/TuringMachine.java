@@ -12,12 +12,14 @@ public class TuringMachine {
     }
 
     public void addStep(Trigger t, Action a) {
-        program.add(t, a);
+        program.put(t, a);
     }
 
     public void addFinalState(int state) {
         finalStates.add(state);
     }
 
-    public void run() { }
+    public void run() {
+        System.out.println(tape.toString());
+    }
 }
