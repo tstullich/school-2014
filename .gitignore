@@ -6,3 +6,6 @@
 *.zip
 *.tga
 *.exe
+*/MSongsDB/*
+*/MillionSongSubset/*
+*.csv
