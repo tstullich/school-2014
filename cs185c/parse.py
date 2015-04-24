@@ -1,32 +1,10 @@
 """
-Tutorial for the Million Song Dataset
-
-by Thierry Bertin-Mahieux (2011) Columbia University
+Script adapted from:
+Thierry Bertin-Mahieux (2011) Columbia University
    tb2332@columbia.edu
    Copyright 2011 T. Bertin-Mahieux, All Rights Reserved
 
-This tutorial will walk you through a quick experiment
-using the Million Song Dataset (MSD). We will actually be working
-on the 10K songs subset for speed issues, but the code should
-transpose seamlessly.
-
-In this tutorial, we do simple metadata analysis. We look at
-which artist has the most songs by iterating over the whole
-dataset and using an SQLite database.
-
-You need to have the MSD code downloaded from GITHUB.
-See the MSD website for details:
-http://labrosa.ee.columbia.edu/millionsong/
-
-If you have any questions regarding the dataset or this tutorial,
-please first take a look at the website. Send us an email
-if you haven't found the answer.
-
-Note: this tutorial is developed using Python 2.6
-      on an Ubuntu machine. PDF created using 'pyreport'.
 """
-
-# usual imports
 import csv
 import os
 import sys
@@ -53,12 +31,7 @@ sys.path.append( os.path.join(msd_code_path,'PythonSrc') )
 # imports specific to the MSD
 import hdf5_getters as GETTERS
 
-# the following function simply gives us a nice string for
-# a time lag in seconds
-def strtimedelta(starttime,stoptime):
-    return str(datetime.timedelta(seconds=stoptime-starttime))
-
-# we define this very useful function to iterate the files
+# useful function to iterate the files
 def apply_to_all_files(basedir,func=lambda x: x,ext='.h5'):
     """
     From a base directory, go through all subdirectories,
@@ -88,22 +61,44 @@ def get_all_attributes(filename):
     """
     This function does 3 simple things:
     - open the song file
-    - get artist ID and put it
-    - close the file
+    - get all required attributes
+    - write it to a csv file 
+    - close the files
     """
     with open('attributes.csv', 'a') as csvfile:
         try:
             # let's apply the previous function to all files
-            csvwriter = csv.writer(csvfile)
+            csvwriter = csv.writer(csvfile, delimiter='\t')
             h5 = GETTERS.open_h5_file_read(filename)
             RESULTS = []
             RESULTS.append(GETTERS.get_artist_id(h5))
             RESULTS.append(GETTERS.get_artist_name(h5))
             RESULTS.append(GETTERS.get_artist_playmeid(h5))
+            RESULTS.append(GETTERS.get_artist_mbid(h5))
+            RESULTS.append(GETTERS.get_artist_terms(h5))
+            RESULTS.append(GETTERS.get_artist_terms_freq(h5))
+            RESULTS.append(GETTERS.get_artist_terms_weight(h5))
+            RESULTS.append(GETTERS.get_audio_md5(h5))
+            RESULTS.append(GETTERS.get_danceability(h5))
+            RESULTS.append(GETTERS.get_duration(h5))
+            RESULTS.append(GETTERS.get_energy(h5))
+            RESULTS.append(GETTERS.get_key(h5))
+            RESULTS.append(GETTERS.get_key_confidence(h5))
+            RESULTS.append(GETTERS.get_loudness(h5))
+            RESULTS.append(GETTERS.get_mode(h5))
+            RESULTS.append(GETTERS.get_mode_confidence(h5))
+            RESULTS.append(GETTERS.get_similar_artists(h5))
+            RESULTS.append(GETTERS.get_song_hotttnesss(h5))
+            RESULTS.append(GETTERS.get_song_id(h5))
+            RESULTS.append(GETTERS.get_tempo(h5))
+            RESULTS.append(GETTERS.get_time_signature(h5))
+            RESULTS.append(GETTERS.get_time_signature_confidence(h5))
+            RESULTS.append(GETTERS.get_title(h5))
+            RESULTS.append(GETTERS.get_track_id(h5))
+            RESULTS.append(GETTERS.get_year(h5))
             csvwriter.writerow(RESULTS)
             h5.close()
         except AttributeError:
-           pass
+            pass
 
-# let's apply the previous function to all files
 apply_to_all_files(msd_subset_data_path, func=get_all_attributes)
