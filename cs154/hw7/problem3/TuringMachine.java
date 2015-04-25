@@ -8,6 +8,8 @@ public class TuringMachine {
 
     public TuringMachine(Tape input) {
         tape = input;
+        program = new HashMap<Trigger, Action>();
+        finalStates = new HashSet<Integer>();
         state = 0;
     }
 
@@ -20,6 +22,22 @@ public class TuringMachine {
     }
 
     public void run() {
-        System.out.println(tape.toString());
+        while (!finalStates.contains(state)) {
+            System.out.println("state = " + state + " index = " + tape.getHead());
+            Action nextAction = getNextAction(state, Character.getNumericValue(tape.read()));
+            state = nextAction.getState();
+            tape.write(Character.forDigit(nextAction.getBit(), 10));
+            tape.moveHead(nextAction.getDirection());
+        }
+        System.out.println("Program halted. Result: " + tape.result());
+    }
+
+    private Action getNextAction(int currentState, int currentBit) {
+        for (Trigger t : program.keySet()) {
+            if ((t.getState() == state) && (t.getCurrentBit() == currentBit)) {
+                return program.get(t);
+            }
+        }
+        return null;
     }
 }

@@ -35,6 +35,10 @@ public class Tape {
         return cells.toString() + " /head = " + head;
     }
 
+    public int getHead() {
+        return head;
+    }
+
     public void moveHead(int steps) {
         head += steps;
         if (head < 0) {
@@ -42,4 +46,15 @@ public class Tape {
         }
         growTape();
     }
+
+    public int result() {
+        int result = 0;
+        for (Character c : cells) {
+            if (Character.getNumericValue(c) == 1) {
+                result++;
+            }
+        }
+        return result;
+    }
+
 }

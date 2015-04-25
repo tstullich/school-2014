@@ -20,4 +20,8 @@ public class Action {
     public int getDirection() {
         return direction;
     }
+
+    public String toString() {
+        return "state: " + newState + " bit: " + newBit + " direction: " + direction;
+    }
 }
