@@ -36,9 +36,12 @@ public class TuringMachine {
         System.out.println("Program halted. Result: " + tape.result());
     }
 
-    private Action getNextAction(int currentState, int currentBit) {
+    private Action getNextAction(int currentState, char currentBit) {
         for (Trigger t : program.keySet()) {
             if ((t.getState() == state) && (t.getCurrentBit() == currentBit)) {
+                if (currentBit == 'B' || currentBit == 'A') {
+                    System.out.print("(" + currentState + ", " + currentBit + ") " + "=> ");
+                }
                 return program.get(t);
             }
         }
