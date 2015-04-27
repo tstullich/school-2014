@@ -1,8 +1,8 @@
 public class Trigger {
     private int currentState;
-    private int currentBit;
+    private char currentBit;
 
-    public Trigger(int state, int bit) {
+    public Trigger(int state, char bit) {
         currentState = state;
         currentBit = bit;
     }
@@ -11,7 +11,7 @@ public class Trigger {
         return currentState;
     }
 
-    public int getCurrentBit() {
+    public char getCurrentBit() {
         return currentBit;
     }
 }

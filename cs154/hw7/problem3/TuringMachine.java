@@ -24,9 +24,13 @@ public class TuringMachine {
     public void run() {
         while (!finalStates.contains(state)) {
             System.out.println("state = " + state + " index = " + tape.getHead());
-            Action nextAction = getNextAction(state, Character.getNumericValue(tape.read()));
+            Action nextAction = getNextAction(state, tape.read());
+            if (nextAction == null) {
+                System.out.println("No new state found. Exiting");
+                return;
+            }
             state = nextAction.getState();
-            tape.write(Character.forDigit(nextAction.getBit(), 10));
+            tape.write(nextAction.getBit());
             tape.moveHead(nextAction.getDirection());
         }
         System.out.println("Program halted. Result: " + tape.result());

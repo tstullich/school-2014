@@ -1,9 +1,9 @@
 public class Action {
     private int newState;
-    private int newBit;
+    private char newBit;
     private int direction;
 
-    public Action(int state, int bit, int direction) {
+    public Action(int state, char bit, int direction) {
         newState = state;
         newBit = bit;
         this.direction = direction;
@@ -13,7 +13,7 @@ public class Action {
         return newState;
     }
 
-    public int getBit() {
+    public char getBit() {
         return newBit;
     }
 
