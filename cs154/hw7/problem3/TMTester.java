@@ -16,11 +16,11 @@ public class TMTester {
         t = new Trigger(1, 0);
         a = new Action(3, 0, 0);
         tm.addStep(t, a);
-        
+
         t = new Trigger(1, 1);
         a = new Action(2, 0, -1);
         tm.addStep(t, a);
-        
+
         t = new Trigger(2, 0);
         a = new Action(0, 1, 1);
         tm.addStep(t, a);
