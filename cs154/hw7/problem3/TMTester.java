@@ -2,7 +2,7 @@ public class TMTester {
     public static void test2() {
         Tape tape = new Tape("A1111B");
         TuringMachine tm = new TuringMachine(tape);
-        tm.addFinalState(6);
+        tm.addFinalState(5);
 
         // Seek a 1
         Trigger t = new Trigger(0, 'A');
@@ -19,7 +19,7 @@ public class TMTester {
 
         // Finish state
         t = new Trigger(0, 'B');
-        a = new Action(6, 'B', 0);
+        a = new Action(5, 'B', 0);
         tm.addStep(t, a);
 
         // Seek write start
@@ -52,24 +52,20 @@ public class TMTester {
         a = new Action(3, '1', 1);
         tm.addStep(t, a);
 
-        t = new Trigger(4, '0');
-        a = new Action(5, '1', 0);
-        tm.addStep(t, a);
-
         // Seek back stage
-        t = new Trigger(5, '1');
-        a = new Action(5, '1', -1);
+        t = new Trigger(4, '1');
+        a = new Action(4, '1', -1);
         tm.addStep(t, a);
 
-        t = new Trigger(5, 'B');
-        a = new Action(5, 'B', -1);
+        t = new Trigger(4, 'B');
+        a = new Action(4, 'B', -1);
         tm.addStep(t, a);
 
-        t = new Trigger(5, '0');
-        a = new Action(5, '0', -1);
+        t = new Trigger(4, '0');
+        a = new Action(4, '0', -1);
         tm.addStep(t, a);
 
-        t = new Trigger(5, 'A');
+        t = new Trigger(4, 'A');
         a = new Action(0, 'A', 0);
         tm.addStep(t, a);
         tm.run();
