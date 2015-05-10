@@ -8,38 +8,69 @@ public class Command {
     private int target;
     private int pc;
     private int count; // used for the loop command
-    private static String pattern = "([A-Z]+[: ]{1}){0,1}(load |goto |inc |loop |end ){0,1}([a-z]+ ){0,1}([0-9]+){0,1}";
-    private static Pattern cmmdPattern;
+    private static String pattern = "([A-Z]+: )?((goto) ([A-Z]+)|(load) ([a-z]+), ([a-z0-9]+)?|(inc|loop|load) ([a-z]+)|(end))";
+    private static Pattern cmmdPattern = Pattern.compile(pattern);
 
     public Command(String command, int pc) {
+        this.pc = pc;
         System.out.println(command);
-        Pattern cmmdPattern = Pattern.compile(pattern);
-        Matcher m = cmmdPattern.matcher(command);
+        Matcher match = cmmdPattern.matcher(command);
+        match.matches();
 
-        if (m.find()) {
-            if (m.group(0) != null) {
-                System.out.print("0. ");
-                System.out.println(m.group(0));
-                label = m.group(0);
+        if (match.group(1) != null && !match.group(1).isEmpty()) {
+            label = match.group(1);
+        }
+
+        if (match.group(2) != null && match.group(2).contains("load")) {
+            if (!match.group(2).contains(",")) {
+                if (match.group(10) != null) {
+                    opCode = match.group(8);
+                }
+                if(match.group(11) != null) {
+                    arg1 = match.group(9);
+                }
             }
-            if (m.group(1) != null) {
-                System.out.print("1. ");
-                System.out.println(m.group(1));
-                opCode = m.group(1);
+
+            if(match.group(5) != null) {
+                opCode = match.group(5);
             }
-            if (m.group(2) != null) {
-                System.out.print("2. ");
-                System.out.println(m.group(2));
-                arg1 = m.group(2);
+            if(match.group(6) != null) {
+                arg1 = match.group(6);
             }
-            if (m.group(3) != null) {
-                System.out.print("3. ");
-                System.out.println(m.group(3));
-                arg2 = m.group(3);
+            if(match.group(7) != null) {
+                arg2 = match.group(7);
+            }
+        }
+        else if (match.group(2) != null && match.group(2).contains("inc")) {
+            if(match.group(10) != null) {
+                opCode = match.group(8);
+            }
+            if(match.group(11) != null) {
+                arg1 = match.group(9);
+            }
+        }
+        else if (match.group(2) != null && match.group(2).contains("goto")) {
+            if(match.group(3) != null) {
+                opCode = match.group(3);
+            }
+            if(match.group(4) != null) {
+                arg1 = match.group(4); //???
+            }
+        }
+        else if (match.group(2) != null && match.group(2).contains("loop")) {
+            if(match.group(10) != null) {
+                opCode = match.group(8);
+            }
+            if(match.group(11) != null) {
+                arg1 = match.group(9);
+            }
+        }
+        else if(match.group(2) != null && match.group(2).contains("end")) {
+            if(match.group(12) != null) {
+                opCode = match.group(10);
             }
         }
 
-        this.pc = pc;
     }
 
     public String getLabel() {
