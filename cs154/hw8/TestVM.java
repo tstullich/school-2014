@@ -1,9 +1,11 @@
+import java.io.PrintStream;
+
 public class TestVM {
     public static void main(String[] args) {
         try {
             VM vm = new VM();
-            vm.add("load x 10");
-            vm.add("load y 5");
+            vm.add("load x, 10");
+            vm.add("load y, 5");
             vm.add("loop x");
             vm.add("inc y");
             vm.add("end");
@@ -13,7 +15,7 @@ public class TestVM {
             vm.run();
             vm.printStats();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace(new PrintStream(System.out));
         }
     }
 }

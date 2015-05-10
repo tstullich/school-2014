@@ -8,25 +8,25 @@ public class Command {
     private int target;
     private int pc;
     private int count; // used for the loop command
-    private static String pattern = "([A-Z]+: )?((goto) ([A-Z]+)|(load) ([a-z]+), ([a-z0-9]+)?|(inc|loop|load) ([a-z]+)|(end))";
-    private static Pattern cmmdPattern = Pattern.compile(pattern);
+    private static String regEx = "([A-Z]+: )?((goto) ([A-Z]+)|(load) ([a-z]+), ([a-z0-9]+)?|(inc|loop|load) ([a-z]+)|(end))";
+    private static Pattern cmmdPattern = Pattern.compile(regEx);
 
     public Command(String command, int pc) {
         this.pc = pc;
         System.out.println(command);
         Matcher match = cmmdPattern.matcher(command);
-        match.matches();
 
+        if(match.find()) {
         if (match.group(1) != null && !match.group(1).isEmpty()) {
             label = match.group(1);
         }
 
         if (match.group(2) != null && match.group(2).contains("load")) {
             if (!match.group(2).contains(",")) {
-                if (match.group(10) != null) {
+                if (match.group(8) != null) {
                     opCode = match.group(8);
                 }
-                if(match.group(11) != null) {
+                if(match.group(9) != null) {
                     arg1 = match.group(9);
                 }
             }
@@ -42,10 +42,10 @@ public class Command {
             }
         }
         else if (match.group(2) != null && match.group(2).contains("inc")) {
-            if(match.group(10) != null) {
+            if(match.group(8) != null) {
                 opCode = match.group(8);
             }
-            if(match.group(11) != null) {
+            if(match.group(9) != null) {
                 arg1 = match.group(9);
             }
         }
@@ -58,19 +58,20 @@ public class Command {
             }
         }
         else if (match.group(2) != null && match.group(2).contains("loop")) {
-            if(match.group(10) != null) {
+            if(match.group(8) != null) {
                 opCode = match.group(8);
             }
-            if(match.group(11) != null) {
+            if(match.group(9) != null) {
                 arg1 = match.group(9);
             }
         }
         else if(match.group(2) != null && match.group(2).contains("end")) {
-            if(match.group(12) != null) {
+            if(match.group(10) != null) {
                 opCode = match.group(10);
             }
         }
-
+        }
+        System.out.println(label + " " + opCode + " " + arg1 + " " + arg2);
     }
 
     public String getLabel() {
