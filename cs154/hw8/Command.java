@@ -16,62 +16,62 @@ public class Command {
         System.out.println(command);
         Matcher match = cmmdPattern.matcher(command);
 
-        if(match.find()) {
-        if (match.group(1) != null && !match.group(1).isEmpty()) {
-            label = match.group(1);
-        }
+        if(match.matches()) {
+            if (match.group(1) != null && !match.group(1).isEmpty()) {
+                String[] s = match.group(1).split(":");
+                label = s[0];
+            }
 
-        if (match.group(2) != null && match.group(2).contains("load")) {
-            if (!match.group(2).contains(",")) {
-                if (match.group(8) != null) {
+            if (match.group(2) != null && match.group(2).contains("load")) {
+                if (!match.group(2).contains(",")) {
+                    if (match.group(8) != null) {
+                        opCode = match.group(8);
+                    }
+                    if(match.group(9) != null) {
+                        arg1 = match.group(9);
+                    }
+                }
+
+                if(match.group(5) != null) {
+                    opCode = match.group(5);
+                }
+                if(match.group(6) != null) {
+                    arg1 = match.group(6);
+                }
+                if(match.group(7) != null) {
+                    arg2 = match.group(7);
+                }
+            }
+            else if (match.group(2) != null && match.group(2).contains("inc")) {
+                if(match.group(8) != null) {
                     opCode = match.group(8);
                 }
                 if(match.group(9) != null) {
                     arg1 = match.group(9);
                 }
             }
-
-            if(match.group(5) != null) {
-                opCode = match.group(5);
+            else if (match.group(2) != null && match.group(2).contains("goto")) {
+                if(match.group(3) != null) {
+                    opCode = match.group(3);
+                }
+                if(match.group(4) != null) {
+                    arg1 = match.group(4); //???
+                }
             }
-            if(match.group(6) != null) {
-                arg1 = match.group(6);
+            else if (match.group(2) != null && match.group(2).contains("loop")) {
+                if(match.group(8) != null) {
+                    opCode = match.group(8);
+                }
+                if(match.group(9) != null) {
+                    arg1 = match.group(9);
+                }
             }
-            if(match.group(7) != null) {
-                arg2 = match.group(7);
-            }
-        }
-        else if (match.group(2) != null && match.group(2).contains("inc")) {
-            if(match.group(8) != null) {
-                opCode = match.group(8);
-            }
-            if(match.group(9) != null) {
-                arg1 = match.group(9);
-            }
-        }
-        else if (match.group(2) != null && match.group(2).contains("goto")) {
-            if(match.group(3) != null) {
-                opCode = match.group(3);
-            }
-            if(match.group(4) != null) {
-                arg1 = match.group(4); //???
+            else if(match.group(2) != null && match.group(2).contains("end")) {
+                if(match.group(10) != null) {
+                    opCode = match.group(10);
+                }
             }
         }
-        else if (match.group(2) != null && match.group(2).contains("loop")) {
-            if(match.group(8) != null) {
-                opCode = match.group(8);
-            }
-            if(match.group(9) != null) {
-                arg1 = match.group(9);
-            }
-        }
-        else if(match.group(2) != null && match.group(2).contains("end")) {
-            if(match.group(10) != null) {
-                opCode = match.group(10);
-            }
-        }
-        }
-        System.out.println(label + " " + opCode + " " + arg1 + " " + arg2);
     }
 
     public String getLabel() {

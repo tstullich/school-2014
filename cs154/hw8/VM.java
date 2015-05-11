@@ -13,7 +13,7 @@ public class VM {
     }
 
     public void add(String cmd) {
-        program.add(new Command(cmd, pc));
+        program.add(new Command(cmd, pc++));
     }
 
     private void resolveLabels() {
@@ -37,7 +37,9 @@ public class VM {
 
         // Implement
         for (Command cmd : program) {
-
+           if (cmd.getOpcode().equals("goto")) {
+               cmd.setTarget(targets.get(cmd.getArg1()));
+           }
         }
     }
 
@@ -57,23 +59,30 @@ public class VM {
 
     public void execute(Command cmd) {
         if (cmd.getOpcode().equals("load")) {
-            vars.put(cmd.getArg1(), Integer.parseInt(cmd.getArg2()));
+                vars.put(cmd.getArg1(), Integer.parseInt(cmd.getArg2()));
         }
-        else if (cmd.getOpcode().equals("inc")){
+        else if (cmd.getOpcode().equals("inc")) {
             int var = vars.get(cmd.getArg1());
             vars.put(cmd.getArg1(), var + 1);
         }
-        else if (cmd.getOpcode().equals("goto")){
+        else if (cmd.getOpcode().equals("goto")) {
             // Set pc
             pc = cmd.getTarget();
         }
-        else if (cmd.getOpcode().equals("loop")){
-            cmd.setCount(Integer.parseInt(cmd.getArg1()));
-            if (cmd.getCount() == 0) {
+        else if (cmd.getOpcode().equals("loop")) {
+            // If it's an actual number parse directly
+            if (isNumeric(cmd.getArg1())) {
+                cmd.setCount(Integer.parseInt(cmd.getArg1()));
+            }
+            else {
+                int newCount = vars.get(cmd.getArg1());
+                cmd.setCount(newCount);
+            }
+            if (cmd.getCount() <= 0) {
                 pc = cmd.getTarget() + 1;
             }
         }
-        else if (cmd.getOpcode().equals("end")){
+        else if (cmd.getOpcode().equals("end")) {
             Command loop = program.get(cmd.getTarget());
             loop.setCount(loop.getCount() - 1);
             if (loop.getCount() > 0) {
@@ -83,6 +92,9 @@ public class VM {
         else {
             System.out.println("Invalid instruction encountered. Halting execution");
             return;
+        }
+        for (Map.Entry v : vars.entrySet()) {
+            System.out.println(v.getKey() + " => " + v.getValue());
         }
     }
 
@@ -95,11 +107,14 @@ public class VM {
     }
 
     public void printStats() {
-        System.out.println("Instructions executed");
         System.out.println("PC: " + pc);
-        System.out.println("Vars");
+        System.out.println("Variables:");
         for (Map.Entry<String, Integer> entry : vars.entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue());
+            System.out.println(entry.getKey() + "=" + entry.getValue());
         }
+    }
+
+    private boolean isNumeric(String s) {
+        return s.matches("[-+]?\\d*\\.?\\d+");
     }
 }
