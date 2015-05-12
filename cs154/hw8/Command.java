@@ -13,7 +13,6 @@ public class Command {
 
     public Command(String command, int pc) {
         this.pc = pc;
-        System.out.println(command);
         Matcher match = cmmdPattern.matcher(command);
 
         if(match.matches()) {

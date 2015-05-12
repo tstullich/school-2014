@@ -5,9 +5,11 @@ public class VM {
     private Integer pc;
     private Map<String, Integer> vars;
     private ArrayList<Command> program;
+    private int executedInstructions;
 
     public VM() {
         pc = 0;
+        executedInstructions = 0;
         vars = new HashMap<String, Integer>();
         program = new ArrayList<Command>();
     }
@@ -20,7 +22,6 @@ public class VM {
         Stack<Command> loopStack = new Stack<Command>();
         Map<String, Integer> targets = new HashMap<String, Integer>();
 
-        // Implement
         for (Command cmd : program) {
             if (cmd.getLabel() != null) {
                targets.put(cmd.getLabel(), cmd.getPc());
@@ -35,7 +36,6 @@ public class VM {
             }
         }
 
-        // Implement
         for (Command cmd : program) {
            if (cmd.getOpcode().equals("goto")) {
                cmd.setTarget(targets.get(cmd.getArg1()));
@@ -59,11 +59,16 @@ public class VM {
 
     public void execute(Command cmd) {
         if (cmd.getOpcode().equals("load")) {
-                vars.put(cmd.getArg1(), Integer.parseInt(cmd.getArg2()));
+            vars.put(cmd.getArg1(), Integer.parseInt(cmd.getArg2()));
         }
         else if (cmd.getOpcode().equals("inc")) {
-            int var = vars.get(cmd.getArg1());
-            vars.put(cmd.getArg1(), var + 1);
+            if (vars.containsKey(cmd.getArg1())) {
+                int var = vars.get(cmd.getArg1());
+                vars.put(cmd.getArg1(), var + 1);
+            }
+            else {
+                vars.put(cmd.getArg1(), 0);
+            }
         }
         else if (cmd.getOpcode().equals("goto")) {
             // Set pc
@@ -75,8 +80,15 @@ public class VM {
                 cmd.setCount(Integer.parseInt(cmd.getArg1()));
             }
             else {
-                int newCount = vars.get(cmd.getArg1());
-                cmd.setCount(newCount);
+                if (vars.containsKey(cmd.getArg1())) {
+                    int newCount = vars.get(cmd.getArg1());
+                    cmd.setCount(newCount);
+                }
+                else {
+                    int temp = 0;
+                    cmd.setCount(0);
+                    vars.put(cmd.getArg1(), temp);
+                }
             }
             if (cmd.getCount() <= 0) {
                 pc = cmd.getTarget() + 1;
@@ -93,9 +105,6 @@ public class VM {
             System.out.println("Invalid instruction encountered. Halting execution");
             return;
         }
-        for (Map.Entry v : vars.entrySet()) {
-            System.out.println(v.getKey() + " => " + v.getValue());
-        }
     }
 
     public void run() {
@@ -103,11 +112,13 @@ public class VM {
         pc = 0;
         while(pc < program.size()) {
             execute(program.get(pc++));
+            executedInstructions++;
         }
     }
 
     public void printStats() {
         System.out.println("PC: " + pc);
+        System.out.println("Executed Instructions: " + executedInstructions);
         System.out.println("Variables:");
         for (Map.Entry<String, Integer> entry : vars.entrySet()) {
             System.out.println(entry.getKey() + "=" + entry.getValue());
