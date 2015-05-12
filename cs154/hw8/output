@@ -1,0 +1,25 @@
+Testing: Basic increment test
+PC: 8
+Executed Instructions: 25
+Variables:
+x=10
+y=16
+Testing: m + n
+PC: 5
+Executed Instructions: 13
+Variables:
+m=15
+n=5
+Testing: n - m
+PC: 8
+Executed Instructions: 2
+Variables:
+v=10
+z=0
+Testing: m * n
+PC: 8
+Executed Instructions: 24
+Variables:
+x=4
+m=18
+n=2

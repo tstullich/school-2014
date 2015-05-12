@@ -3,6 +3,7 @@ import java.io.PrintStream;
 public class TestVM {
     public static void basicTest() {
          try {
+            System.out.println("Testing: Basic increment test");
             VM vm = new VM();
             vm.add("load x, 10");
             vm.add("load y, 5");
@@ -21,6 +22,7 @@ public class TestVM {
 
     public static void additionTest() {
         try {
+            System.out.println("Testing: m + n");
             VM vm = new VM();
             vm.add("load m, 10");
             vm.add("load n, 5");
@@ -36,19 +38,16 @@ public class TestVM {
 
     public static void subtractionTest() {
         try {
+            System.out.println("Testing: n - m");
             VM vm = new VM();
             vm.add("load v, 10");
-            vm.add("load y, 4");
-            vm.add("loop y");
-            // Beginning of x-1 macro
+            vm.add("loop z");
             vm.add("load w, 0");
             vm.add("loop x");
             vm.add("load v, w");
             vm.add("inc w");
             vm.add("end");
-            vm.add("load y, 5");
             vm.add("end");
-            vm.add("load z, v");
             vm.run();
             vm.printStats();
         }
@@ -59,14 +58,15 @@ public class TestVM {
 
     public static void multiplicationTest() {
         try {
+            System.out.println("Testing: m * n");
             VM vm = new VM();
             vm.add("load n, 2");
             vm.add("load m, 10");
             vm.add("load x, 4");
             vm.add("loop n");
-                vm.add("loop x");
-                    vm.add("inc m");
-                vm.add("end");
+            vm.add("loop x");
+            vm.add("inc m");
+            vm.add("end");
             vm.add("end");
             vm.run();
             vm.printStats();
@@ -79,7 +79,7 @@ public class TestVM {
     public static void main(String[] args) {
         basicTest();
         additionTest();
-        //subtractionTest();
+        subtractionTest();
         multiplicationTest();
     }
 }
